@@ -1,8 +1,22 @@
+.main {
+    display: grid;
+    grid-template-columns: repeat(4, auto);
+    row-gap: 90px;
+    
+    place-items: center;
+    background-color: burlywood;
+}
+
+
 .pictures {
     width: 200px;;
     height: 200px;
+    border-radius: 60px;
+    border: 2px solid black;
 }
-.main {
-    grid-area: flex;
-    justify-content: space-around;
+
+.discription{
+    color: black;
+    text-align: center;
+    font-weight: bold;
 }

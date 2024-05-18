@@ -11,7 +11,6 @@ var radioMap = {
     "glz": new RadioToHebrewNames("גלי צהל", "https://glzwizzlv.bynetcdn.com/glz_mp3?awCollectionId=misc&awEpisodeId=glz"),
     "darom": new RadioToHebrewNames("רדיו דרום", "https://cdn.cybercdn.live/Darom_97FM/Live/icecast.audio"),
     "darom101.5FM": new RadioToHebrewNames("רדיו דרום 101.5", "https://cdn.cybercdn.live/Darom_1015FM/Live/icecast.audio"),
-    "kolUniversity": new RadioToHebrewNames("קול האוניברסיטה", "https://1062onair.runi.ac.il/idc123.mp3"),
     "kan88": new RadioToHebrewNames("כאן 88", "https://27873.live.streamtheworld.com/KAN_88.mp3?dist=coolsite"),
     "kanBet": new RadioToHebrewNames("כאן רשת ב", "https://22533.live.streamtheworld.com/KAN_BET.mp3?dist=coolsite"),
     "kanGimmel": new RadioToHebrewNames("כאן רשת ג", "https://25583.live.streamtheworld.com/KAN_GIMMEL.mp3?dist=coolsite"),
@@ -19,9 +18,12 @@ var radioMap = {
     "kanKolHamusica": new RadioToHebrewNames("כאן קול המוזיקה", "https://27873.live.streamtheworld.com/KAN_KOL_HAMUSICA.mp3?dist=coolsite"),
     "kanReka": new RadioToHebrewNames("כאן רקע", "https://25483.live.streamtheworld.com/KAN_REKA.mp3?dist=coolsite"),
     "kanTarbut": new RadioToHebrewNames("כאן תרבות", "https://25483.live.streamtheworld.com/KAN_REKA.mp3?dist=coolsite"),
-    "ivriShesh": new RadioToHebrewNames("עברי שש", "https://streaming.radio.co/sa06221901/listen"),
     "eco99FM": new RadioToHebrewNames("אקו 99fm", "https://eco01.livecdn.biz/ecolive/99fm_aac/icecast.audio"),
+    "kolUniversity": new RadioToHebrewNames("קול האוניברסיטה", "https://1062onair.runi.ac.il/idc123.mp3"),
+    "bgu": new RadioToHebrewNames("אוניברסיטת בן-גוריון", "https://bguradio.co/listen/bguradio/radio.mp3"),
     "103FM": new RadioToHebrewNames("רדיו 103FM", "https://cdn.cybercdn.live/103FM/Live/icecast.audio"),
+    "tzafon104.5": new RadioToHebrewNames("צפון 104.5", "https://cdn.cybercdn.live/Tzafon_NonStop/Live_Audio/icecast.audio"),
+    "ivriShesh": new RadioToHebrewNames("עברי שש", "https://streaming.radio.co/sa06221901/listen"),
     "radius": new RadioToHebrewNames("רדיו רדיוס", "https://cdn.cybercdn.live/Radios_100FM/Audio/icecast.audio"),
     "r90": new RadioToHebrewNames("רדיו 90", "https://cdn.cybercdn.live/Emtza_Haderech/Live_Audio/icecast.audio"),
     "telAviv102FM": new RadioToHebrewNames("רדיו תל אביב ", "https://102.livecdn.biz/102fm_mp3"),
@@ -41,15 +43,13 @@ var radioMap = {
     "kolHai": new RadioToHebrewNames("קול חי", "https://live.kcm.fm/live-new"),
     "kolYezreel": new RadioToHebrewNames("קול יזרעאל", "https://radio.streamgates.net/stream/yezreel"),
     "kolNatanya": new RadioToHebrewNames("קול נתניה", "https://radio.streamgates.net/stream/netanya"),
-    "kolHanachal": new RadioToHebrewNames("ברסלב", "https://cast.ereznet.co.il/radio/8070/radio.mp3"),
+    "kolHanachal": new RadioToHebrewNames("קול הנחל", "https://cast.ereznet.co.il/radio/8070/radio.mp3"),
     "kolRega": new RadioToHebrewNames("קול רגע", "https://cdn.cybercdn.live/Kol_Rega/Live_Audio/icecast.audio"),
-    "tzafon104.5": new RadioToHebrewNames("צפון 104.5", "https://cdn.cybercdn.live/Tzafon_NonStop/Live_Audio/icecast.audio"),
     "sol": new RadioToHebrewNames("רדיו סול", "https://radio.streamgates.net/stream/sol"),
     "sahar": new RadioToHebrewNames("רדיו סהר", "https://live.ecast.co.il/stream/sahar"),
     "neto": new RadioToHebrewNames("רדיו נטו", "https://live.ecast.co.il/stream/radioneto1"),
     "noshmimMizrahit": new RadioToHebrewNames("נושמים מזרחית", "https://mzr.mediacast.co.il/mzradio"),
     "nostalgiaIsraeli": new RadioToHebrewNames("נוסטלגיה ישראלי", "http://194.213.4.197:8000/;stream/1"),
-    "bgu": new RadioToHebrewNames("אוניברסיטת בן-גוריון", "https://bguradio.co/listen/bguradio/radio.mp3"),
     "martitMeitarBalev": new RadioToHebrewNames("רדיו מרטיט מיתר בלב", "https://liveradio.co.il/wet"),
     "mizrahit": new RadioToHebrewNames("רדיו מזרחית", "https://mzr.mediacast.co.il/mzradio"),
     "mahotHachaim": new RadioToHebrewNames("רדיו מהות-החיים", "https://eol-live.cdnwiz.com/eol/eolsite/icecast.audio"),
@@ -81,12 +81,11 @@ var radioMap = {
 //        }
 //    });    
 //}
-var main = document.querySelector("mainWeb");
+var main = document.querySelector(".main");
 var _loop_1 = function (radioName) {
     var imgSource = "Photos/".concat(radioName, ".png");
     var element = document.createElement('img');
     element.src = imgSource;
-    element.classList.add("".concat(radioName));
     element.classList.add('pictures');
     element.addEventListener('click', function () {
         var stationId = radioName;
@@ -100,7 +99,13 @@ var _loop_1 = function (radioName) {
             isRadio = false;
         }
     });
-    main === null || main === void 0 ? void 0 : main.appendChild(element);
+    var elementDiscription = document.createElement('figcaption');
+    elementDiscription.classList.add('discription');
+    elementDiscription.appendChild(document.createTextNode(radioMap[radioName].hebrewName));
+    var figure = document.createElement('figure');
+    figure.appendChild(element);
+    figure.appendChild(elementDiscription);
+    main === null || main === void 0 ? void 0 : main.appendChild(figure);
 };
 for (var radioName in radioMap) {
     _loop_1(radioName);
