@@ -99,14 +99,25 @@ var _loop_1 = function (radioName) {
             isRadio = false;
         }
     });
-    var elementDiscription = document.createElement('figcaption');
-    elementDiscription.classList.add('discription');
-    elementDiscription.appendChild(document.createTextNode(radioMap[radioName].hebrewName));
+    var elementDescription = document.createElement('figcaption');
+    elementDescription.classList.add('description');
+    elementDescription.appendChild(document.createTextNode(radioMap[radioName].hebrewName));
     var figure = document.createElement('figure');
+    figure.setAttribute('id', radioName);
     figure.appendChild(element);
-    figure.appendChild(elementDiscription);
+    figure.appendChild(elementDescription);
     main === null || main === void 0 ? void 0 : main.appendChild(figure);
 };
 for (var radioName in radioMap) {
     _loop_1(radioName);
 }
+var search = document.getElementById("search-input");
+search === null || search === void 0 ? void 0 : search.addEventListener("input", function (e) {
+    var input = e.target.value;
+    console.log(input);
+    for (var radioName in radioMap) {
+        var isVisible = (radioMap[radioName].hebrewName).includes(input) || radioName.includes(input);
+        var currentFigure = document.getElementById(radioName);
+        currentFigure === null || currentFigure === void 0 ? void 0 : currentFigure.classList.toggle("invisible", !isVisible);
+    }
+});

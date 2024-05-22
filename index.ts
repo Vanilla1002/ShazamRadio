@@ -1,5 +1,5 @@
 class RadioToHebrewNames{
-    hebrewName: string;
+    hebrewName: string; 
     link: string;
 
     public constructor(hebrewName: string,link: string){
@@ -112,13 +112,27 @@ for (const radioName in radioMap){
         }
     });
 
-    const elementDiscription = document.createElement('figcaption');
-    elementDiscription.classList.add('discription');
-    elementDiscription.appendChild(document.createTextNode(radioMap[radioName].hebrewName));
+    const elementDescription = document.createElement('figcaption');
+    elementDescription.classList.add('description');
+    elementDescription.appendChild(document.createTextNode(radioMap[radioName].hebrewName));
     
     const figure = document.createElement('figure');
+    figure.setAttribute('id',radioName);
 
     figure.appendChild(element);
-    figure.appendChild(elementDiscription);
+    figure.appendChild(elementDescription);
+    
     main?.appendChild(figure);
 }
+
+const search = document.getElementById("search-input");
+search?.addEventListener("input", (e) =>{
+    const input = (e.target as HTMLInputElement).value;
+    console.log(input)
+    for (const radioName in radioMap){
+        const isVisible = (radioMap[radioName].hebrewName).includes(input) || radioName.includes(input);
+        const currentFigure = document.getElementById(radioName);
+        currentFigure?.classList.toggle("invisible", !isVisible);
+    }
+        
+});
