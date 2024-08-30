@@ -29,6 +29,7 @@ function createRadioDict(dict: {[key: string]: RadioToHebrewNames}){
 }
 createRadioDict(radioMap);
 
+//DOM 
 const body = document.querySelector('body');
 const main = document.getElementById("screen");
 const searchInput = document.getElementById("search-input") as HTMLInputElement;
@@ -46,12 +47,11 @@ const enlargedImg  = document.getElementById("enlarged-img") as HTMLImageElement
 const stationNameBig = document.getElementById("station-name-big");
 const liveButton = document.getElementById("live-button");
 const pauseButton = document.getElementById("pause-button");
+const songDestcripton = document.getElementById('song-name');
 
 const volumeSlider = document.getElementById("slider-vol") as HTMLInputElement;
 const volumeOffIcon = document.getElementById("volume-off");
 const volumeMaxIcon = document.getElementById("volume-max");
-
-
 
 let currentStationAudio: HTMLAudioElement = new Audio();
 let currentStationName: string = '';
@@ -62,11 +62,72 @@ let hasScrolled: boolean = false;
 let descriptions: HTMLElement[] = [];
 let alpha: number = 1;
 let everstopped : boolean = false;
-let currentVolume = parseInt(volumeSlider.value);
+let lastsong : {};
+let currentVolume = parseInt(volumeSlider.value)/100;
+
+
+//connection
+
+let socket: WebSocket = new WebSocket("ws://localhost:8000/ws");
+let messageQueue: string[] = []; 
+let isWebSocketReady: boolean = false;
+
+//when connection is established
+socket.addEventListener('open', function (event) {
+    console.log('Connected to the WS Server!');
+    isWebSocketReady = true;
+
+    while (messageQueue.length > 0) {
+        const message = messageQueue.shift();
+        if (message) {
+            socket.send(message);
+        }
+    }
+});
+
+//sending if the connection is ready else putting it in the queue
+function sendMessage(message: string) {
+    if (isWebSocketReady) {
+        socket.send(message);
+    } else {
+        messageQueue.push(message); 
+    }
+}
+
+
+
+socket.addEventListener('error', function (event) {
+    console.error('WebSocket error observed:', event);
+});
+
+socket.addEventListener('close', function (event) {
+    console.log('Connection closed');
+});
+
+function sendUpdate() {
+    if (isRadio && !everstopped){
+        sendMessage(currentStationName);
+
+    }
+}
+
+setInterval(function(){
+    sendUpdate()
+}, 30000)
+
+
+//recieving the current song
+socket.onmessage = (event) => {
+    const currentSong = JSON.parse(event.data);
+    if (currentSong != lastsong){
+        songDestcripton.innerHTML = `${currentSong['songName']} - ${currentSong['singer']}`;
+        songDestcripton.setAttribute("href", `${currentSong['href']}`);
+        lastsong = currentSong;
+    }
+};
 
 
 //creating the main (all the stations)
-
 for (const radioName in radioMap){
 
     const imgSource = `../assets/_images/StationsPng/${radioName}.png`;
@@ -89,41 +150,38 @@ for (const radioName in radioMap){
     figure.appendChild(elementDescription);
 
     descriptions.push(figure);
-
     main?.appendChild(figure);
 }
 
 function whenChosingStation(stationId : string) {
-    
     enlargedImg.src = `../assets/_images/StationsPng/${stationId}.png`;
     stationNameBig.textContent = radioMap[stationId].hebrewName;
-    if (!isRadio){
-        currentStationAudio = new Audio(radioMap[stationId].link);
-        currentStationAudio.play();
-        isRadio = true;
+    if(currentStationName!= stationId){
+        startingTheStation(stationId);
 
     }
-    else if(currentStationName!= stationId ){
-        startingTheStation(stationId);
-        
-    }
     currentStationName = stationId;
-    rotatingToRight();
+
+    openingBigStationTab();
 }
 function startingTheStation(stationId : string){
+    volumeSlider.value = '50';
     currentStationAudio.pause();
     currentStationAudio = new Audio(radioMap[stationId].link);
     currentStationAudio.play();
     pauseButton.classList.remove('fa-play')
     pauseButton.classList.add('fa-stop')
+    liveButton.style.display = 'none';
     isPaused = false;
     everstopped = false;
-        
+    isRadio = true;
+    sendMessage(stationId);
 }
 
-function rotatingToLeft() {
+function backToMainScreen() {
     enlargedView.classList.remove('active');
     //showing all again
+    main.style.display = '';
     for (const radioName in radioMap){
         const currentFigure = document.getElementById(radioName);
         currentFigure?.classList.remove('hidden');
@@ -137,7 +195,7 @@ function rotatingToLeft() {
     }, 500); 
 }
 
-function rotatingToRight(){
+function openingBigStationTab(){
     enlargedView.classList.remove('hidden');
     setTimeout(() => {
         enlargedView.classList.add('active');
@@ -148,13 +206,14 @@ function rotatingToRight(){
     }, 10); 
 
     setTimeout(()=>{
+        main.style.display = 'none';
         window.scrollTo(0, 0);
     },500);
     body.classList.add('no-scroll');
 }
 
-backArrow.addEventListener('click', rotatingToLeft);
-rightArrow.addEventListener('click', rotatingToRight);
+backArrow.addEventListener('click', backToMainScreen);
+rightArrow.addEventListener('click', openingBigStationTab);
 
 
 //search bar contant
@@ -197,6 +256,9 @@ nightMode?.addEventListener("click", () => {
         // name
         figcaption.classList.toggle("description", !isDark);
         figcaption.classList.toggle("descriptionDark", isDark);
+
+        //song name
+        songDestcripton.style.color = isDark ? 'white' : 'black';
 
         // pictures border
         img.classList.toggle("pictures", !isDark);
@@ -284,7 +346,8 @@ function pauseOrResume(){
         pauseButton.classList.remove('fa-stop')
         pauseButton.classList.add('fa-play')
         isPaused = !isPaused;
-        everstopped = true;
+        ifStopped()
+        liveButton.style.display = '';
     }
     else{
         currentStationAudio.play();
@@ -295,10 +358,9 @@ function pauseOrResume(){
 }
 
 function goLive(){
-    if (everstopped){
         startingTheStation(currentStationName);
-    }
 }
+
 
 
 pauseButton.addEventListener("click",pauseOrResume);
@@ -322,3 +384,14 @@ volumeMaxIcon.addEventListener('click', () => {
 });
 
 volumeSlider.addEventListener("input", updateVolume);
+
+
+function ifStopped(){
+    lastsong = {}
+    everstopped = true;
+    liveButton.style.display = '';
+    setTimeout(()=>{
+        songDestcripton.innerHTML = ``;
+    },10000);
+    
+}

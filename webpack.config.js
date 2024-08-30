@@ -21,7 +21,8 @@ const config = {
     plugins: [
         new HtmlWebpackPlugin({
             template: 'src/Main.html',
-            inject: true
+            inject: true,
+            publicPath: '/static/'
         }),
     ],
     module: {

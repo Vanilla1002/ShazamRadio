@@ -211,6 +211,7 @@
 }
 
 #pause-button{
+    margin-top: 20px;
     cursor: pointer;
     font-size: 30px;
 }
