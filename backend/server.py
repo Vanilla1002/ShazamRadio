@@ -1,12 +1,12 @@
 
-import json
 import os
+import time
 
 from fastapi.responses import FileResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from songIdentify import identify_song 
 import uvicorn
-from fastapi import FastAPI , WebSocket
+from fastapi import FastAPI, Request 
 import sys
 
 sys.stdout.reconfigure(encoding='utf-8')
@@ -18,49 +18,47 @@ def songInfo(radio_name):
 app = FastAPI()
 
 # Mount - upload the files to the base web
-
-
-app.mount("/static", StaticFiles(directory="C:/Users/user/Projects/VisualStudioProjects/Radio-web/dist"), name="static")
-
-app.mount("/assets", StaticFiles(directory="C:/Users/user/Projects/VisualStudioProjects/Radio-web/assets"), name="assets")
-
+app.mount("/assets", StaticFiles(directory=os.path.join('..', 'assets')), name="assets")
+app.mount('/static', StaticFiles(directory=os.path.join('..', 'dist')), name='static')
 # Serve the index.html file directly
-@app.get("/")
+@app.get("/radio")
 async def serve_index():
-    file_path = "C:/Users/user/Projects/VisualStudioProjects/Radio-web/dist/index.html"
+    file_path = r"..\dist\index.html"
     if os.path.isfile(file_path):
         return FileResponse(file_path)
     return {"message": "Index file not found"}
 
 
-# WebSocket endpoint
-@app.websocket("/ws")
-async def websocket_endpoint(websocket: WebSocket):
+cache = {} # key : radio_name, value: {InformationOfSong, time.time()} informationofdaughter
+last_run_time = None
 
 
-    await websocket.accept()
-    while True:
-        
-        data = await websocket.receive_text()
-        result = await songInfo(data)
-        if result != None:
-            await websocket.send_text(json.dumps(result.__dict__(), ensure_ascii=False))
-        
+
+
+
+@app.post("/identify_song")
+async def identify_song_endpoint(request: Request):
+    data = await request.json()  
+    radio_name = data.get("radio_name")
+    if radio_name not in cache or (time.time() - cache[radio_name]['time'] > 10):
+        result = await songInfo(radio_name)
+        cache[radio_name] = {'InformationOfSong': result, 'time': time.time()}
+    return what_to_send(cache[radio_name]['InformationOfSong'])
+
+
+def what_to_send(result):
+    if result is not None:
+        return result.__dict__()
+    return None
+
+
 
 # catch-all route for other paths and return to /
 @app.get("/{path_name:path}")
 async def catch_all(path_name: str):
-    return RedirectResponse(url="/")
+    return RedirectResponse(url="/radio")
+
+if __name__ == "__main__":
+    uvicorn.run("server:app", host="127.0.0.1", port=8000, reload=True)
 
 
-
-# result = asyncio.run(songInfo('eco99FM'))
-# print(result.songName)
-# helper = {}
-
-# result = asyncio.run(songInfo('eco99FM'))
-# print(str(result))
-# print(result.songName)
-# print(result.singer)
-# print(result.fullName)
-# print(result.href)

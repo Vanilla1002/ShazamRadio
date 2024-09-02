@@ -1,3 +1,4 @@
+import { Socket } from 'dgram';
 import radioStationsInfo from './radioStationsInfo.json';
 
 class RadioToHebrewNames{
@@ -29,6 +30,8 @@ function createRadioDict(dict: {[key: string]: RadioToHebrewNames}){
 }
 createRadioDict(radioMap);
 
+
+
 //DOM 
 const body = document.querySelector('body');
 const main = document.getElementById("screen");
@@ -49,9 +52,11 @@ const liveButton = document.getElementById("live-button");
 const pauseButton = document.getElementById("pause-button");
 const songDestcripton = document.getElementById('song-name');
 
+
 const volumeSlider = document.getElementById("slider-vol") as HTMLInputElement;
 const volumeOffIcon = document.getElementById("volume-off");
 const volumeMaxIcon = document.getElementById("volume-max");
+
 
 let currentStationAudio: HTMLAudioElement = new Audio();
 let currentStationName: string = '';
@@ -65,49 +70,52 @@ let everstopped : boolean = false;
 let lastsong : {};
 let currentVolume = parseInt(volumeSlider.value)/100;
 
+//CSS variables
+function getCSSVariableValue(variableName: string): string {
+    return getComputedStyle(document.documentElement).getPropertyValue(variableName).trim();
+  }
+  
+  const lightModePrimary = getCSSVariableValue('--light-mode-primary');
+  const lightModeSecondary = getCSSVariableValue('--light-mode-Secondary');
+  const lightModeAccent = getCSSVariableValue('--light-mode-Accent');
+  
+  const darkModePrimary = getCSSVariableValue('--dark-mode-primary');
+  const darkModeSecondary = getCSSVariableValue('--dark-mode-Secondary');
+  const darkModeAccent = getCSSVariableValue('--dark-mode-Accent');
 
-//connection
 
-let socket: WebSocket = new WebSocket("ws://localhost:8000/ws");
-let messageQueue: string[] = []; 
-let isWebSocketReady: boolean = false;
+//send request, and get response
+async function sendSongRequest(radioName: string) {
+    const response = await fetch('/identify_song', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ radio_name: radioName }),
+    });
 
-//when connection is established
-socket.addEventListener('open', function (event) {
-    console.log('Connected to the WS Server!');
-    isWebSocketReady = true;
-
-    while (messageQueue.length > 0) {
-        const message = messageQueue.shift();
-        if (message) {
-            socket.send(message);
-        }
+    if (!response.ok) {
+        songDestcripton.innerHTML = ``;
+        console.error('Failed to fetch:', response.statusText);
+        return;
     }
-});
-
-//sending if the connection is ready else putting it in the queue
-function sendMessage(message: string) {
-    if (isWebSocketReady) {
-        socket.send(message);
-    } else {
-        messageQueue.push(message); 
+    const currentSong = await response.json();
+    console.log(currentSong);
+    if (currentSong == null){
+        songDestcripton.innerHTML = ``;
+        return;
     }
-}
+    if (currentSong != lastsong){
+        songDestcripton.innerHTML = `${currentSong['songName']} - ${currentSong['singer']}`;
+        songDestcripton.setAttribute("href", `${currentSong['href']}`);
+        lastsong = currentSong;
+    }
+} 
 
-
-
-socket.addEventListener('error', function (event) {
-    console.error('WebSocket error observed:', event);
-});
-
-socket.addEventListener('close', function (event) {
-    console.log('Connection closed');
-});
 
 function sendUpdate() {
-    if (isRadio && !everstopped){
-        sendMessage(currentStationName);
-
+    if (isRadio && !everstopped ){
+        sendSongRequest(currentStationName);
     }
 }
 
@@ -116,21 +124,12 @@ setInterval(function(){
 }, 30000)
 
 
-//recieving the current song
-socket.onmessage = (event) => {
-    const currentSong = JSON.parse(event.data);
-    if (currentSong != lastsong){
-        songDestcripton.innerHTML = `${currentSong['songName']} - ${currentSong['singer']}`;
-        songDestcripton.setAttribute("href", `${currentSong['href']}`);
-        lastsong = currentSong;
-    }
-};
 
 
 //creating the main (all the stations)
 for (const radioName in radioMap){
-
     const imgSource = `../assets/_images/StationsPng/${radioName}.png`;
+    
     
     const element = document.createElement('img');
     element.src = imgSource;
@@ -153,21 +152,25 @@ for (const radioName in radioMap){
     main?.appendChild(figure);
 }
 
-function whenChosingStation(stationId : string) {
-    enlargedImg.src = `../assets/_images/StationsPng/${stationId}.png`;
+function whenChosingStation(stationId : string, imgSource : string = `../assets/_images/StationsPng/${stationId}.png`) {
+    
+    loadImg(imgSource);
+    
     stationNameBig.textContent = radioMap[stationId].hebrewName;
     if(currentStationName!= stationId){
         startingTheStation(stationId);
 
     }
     currentStationName = stationId;
-
     openingBigStationTab();
 }
-function startingTheStation(stationId : string){
-    volumeSlider.value = '50';
+
+async function startingTheStation(stationId : string){
+    songDestcripton.innerHTML = ``;
+    
     currentStationAudio.pause();
     currentStationAudio = new Audio(radioMap[stationId].link);
+    currentStationAudio.volume = currentVolume;
     currentStationAudio.play();
     pauseButton.classList.remove('fa-play')
     pauseButton.classList.add('fa-stop')
@@ -175,7 +178,7 @@ function startingTheStation(stationId : string){
     isPaused = false;
     everstopped = false;
     isRadio = true;
-    sendMessage(stationId);
+    sendSongRequest(stationId);
 }
 
 function backToMainScreen() {
@@ -242,11 +245,11 @@ nightMode?.addEventListener("click", () => {
     // nightmode icon
     nightMode.classList.toggle("fa-moon", !isDark);
     nightMode.classList.toggle("fa-sun", isDark);
-    nightMode.style.color = isDark ? 'white' : 'black';
+    nightMode.style.color = isDark ? darkModeSecondary : lightModeSecondary;
 
     // background
-    body.style.backgroundColor = isDark ? 'black' : 'white';
-    body.style.color = isDark ? 'white' : 'black';
+    body.style.backgroundColor = isDark ? darkModePrimary : lightModePrimary;
+    body.style.color = isDark ? darkModeSecondary : lightModeSecondary;
 
     // name and pictures border
     descriptions.forEach(figure => {
@@ -258,7 +261,7 @@ nightMode?.addEventListener("click", () => {
         figcaption.classList.toggle("descriptionDark", isDark);
 
         //song name
-        songDestcripton.style.color = isDark ? 'white' : 'black';
+        songDestcripton.style.color = isDark ? darkModeAccent : lightModeAccent;
 
         // pictures border
         img.classList.toggle("pictures", !isDark);
@@ -266,19 +269,26 @@ nightMode?.addEventListener("click", () => {
     });
 
     // search looks
-    search.style.backgroundColor = `rgba(${isDark ? '80, 80, 80' : '246, 246, 246'}, ${alpha})`;
-    search.style.color = isDark ? 'white' : 'black';
-    searchInput.style.color = isDark ? 'white' : '#333333';
-    searchIcon.style.color = isDark ? 'rgba(255,255,255,0.25)' :'rgba(0,0,0,0.25)';
+    search.style.backgroundColor = `rgba(${isDark ? '80, 80, 80' : '217,220,222'}, ${alpha})`;
+    search.style.color = isDark ? darkModeAccent : lightModeAccent;
+    searchInput.style.color = isDark ? darkModeAccent : lightModeAccent;
+    searchIcon.style.color = isDark ? 'rgba(231, 196, 249, 0.25)' :'rgba(0, 0, 0, 0.25)';
 
     // enlarge view
-    enlargedView.style.backgroundColor = isDark ? 'black' : 'white';
+    enlargedView.style.backgroundColor = isDark ? darkModePrimary : lightModePrimary;
     enlargedImg.style.boxShadow = boxShadow();
-    stationNameBig.style.color = isDark ? 'white' : 'black';
+    stationNameBig.style.color = isDark ?  darkModeAccent : lightModeAccent;
+    liveButton.style.color = isDark ? darkModeSecondary : lightModeSecondary;
+    pauseButton.style.color = isDark ? darkModeAccent : lightModeAccent;
+
+    backArrow.style.color = isDark ? darkModeSecondary : lightModeAccent;
+    rightArrow.style.color = isDark ? darkModeSecondary : lightModeAccent;
+    volumeOffIcon.style.color = isDark ? darkModeSecondary : lightModeAccent;
+    volumeMaxIcon.style.color = isDark ? darkModeSecondary : lightModeAccent;
 });
 
 function boxShadow() {
-    const color = isDark ? '180, 180, 180' : '0, 0, 0';
+    const color = isDark ? '231, 196, 249' : '117, 117, 117';
     return `0px 10px 15px rgba(${color}, 0.5), 10px 20px 20px rgba(${color}, 0.5), 0px 30px 40px rgba(${color}, 0.5)`;
 }
 
@@ -369,17 +379,20 @@ liveButton.addEventListener("click", goLive);
 //volume
 
 function updateVolume() {
-    const currentVolume = parseInt(volumeSlider.value) / 100;
+    currentVolume = parseInt(volumeSlider.value) / 100;
+    
     currentStationAudio.volume = currentVolume;
 }
 
 volumeOffIcon.addEventListener('click', () => {
     currentStationAudio.volume = 0;
+    currentVolume = 0;
     volumeSlider.value = '0'; 
 });
 
 volumeMaxIcon.addEventListener('click', () => {
     currentStationAudio.volume = 1;
+    currentVolume = 1;
     volumeSlider.value = '100'; 
 });
 
@@ -394,4 +407,9 @@ function ifStopped(){
         songDestcripton.innerHTML = ``;
     },10000);
     
+}
+
+
+async function loadImg(imgSource : string) {
+    enlargedImg.src = imgSource;
 }

@@ -5,11 +5,30 @@
     font-family: 'Poppins', sans-serif;
 } 
 
+:root {
+    --light-mode-primary: rgb(162, 170, 173);
+    --light-mode-Secondary: rgb(56, 8, 80);
+    --light-mode-Accent: rgb(0, 0, 0);
+    
+    --dark-mode-primary: black; /* rgb(31, 42, 46); */
+    --dark-mode-Secondary: rgb(231, 196, 249); 
+    --dark-mode-Accent: white; /* rgb(179, 179, 179) */
+    --try : rgb(113, 112, 110); /* box shadow trying  need to change !!!*/
+
+    /* NEEDS TO CHANGE VOLUME BAR COLOR*/
+    /* NEEDS TO ADD PICTURE HOVER AGAIN */
+  }
+
+body{
+    background-color: var(--light-mode-primary);
+}
+
 #screen {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px,1fr));    
     row-gap: 10px;   
     place-items: center;
+    
 }
 @media (min-width: 768px) {
     #screen {
@@ -38,12 +57,14 @@
     width: 200px;
     height: 200px;
     border-radius: 60px;
-    border: 2px solid black;
-    transition: scale 150ms ease;
+    border: 2px outset var(--light-mode-Secondary);
+    transition: scale 150ms ease ;
 }
 
 .pictures:hover{
     scale: 1.1;
+    box-shadow: 0px 0px 45px 1px rgba(0,0,0,0.35);
+    /* daniel */
 }
 
 .picturesDark {
@@ -51,7 +72,7 @@
     width: 200px;
     height: 200px;
     border-radius: 60px;
-    border: 2px solid rgb(80, 80, 80);
+    border: 2px outset var(--dark-mode-Secondary);
     transition: scale 150ms ease;
 }
 
@@ -62,13 +83,13 @@
 
 /* names */
 .description{
-    color: black;
+    color: var(--light-mode-Accent);
     text-align: center;
     font-size: 25px;
 }
 
 .descriptionDark{
-    color: white;
+    color: var(--dark-mode-Accent);
     text-align: center;
     font-size: 25px;
 }
@@ -104,9 +125,8 @@
     width: max-content;
     padding: 25px;
     border-radius: 24px;
-    background-color: rgba(246, 246, 246,1);
+    background-color: rgba(217,220,222,1);
     transition: box-shadow 0.25s;
-    color: bl;
     
 }
 
@@ -119,7 +139,7 @@
 #search-input{
     font-size: 20px;
     font-family: 'Lexend', sans-serif;
-    color: #333333;
+    color: var(--light-mode-Accent);
     margin-left: 20px;
     margin-right: 20px;
     outline: none;
@@ -133,11 +153,11 @@
 #search-input::placeholder,
 
 #searchIcon{
-    color: rgba(0,0,0,0.25);
+    color: rgba(0,0,0,0.25); 
 }
 
 #dark-mode-icon{
-    color: rgb(0, 0, 0);
+    color: var(--light-mode-Secondary);
     font-size: 40px;
 }
 
@@ -150,7 +170,7 @@
     left: 100%;
     width: 100%;
     height: 100%;
-    background-color: white;
+    background-color: var(--light-mode-primary);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -184,11 +204,11 @@
     border-radius: 30px;
     margin-bottom: 20px;
     transform: translateY(-20px);
-    box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.5), 10px 20px 20px rgba(0, 0, 0, 0.5), 0px 30px 40px rgba(0, 0, 0, 0.5);
+    box-shadow: 0px 10px 15px rgba(117, 117, 117, 0.5), 10px 20px 20px rgba(117, 117, 117, 0.5), 0px 30px 40px rgba(117, 117, 117, 0.5);
 }
 #station-name-big {
     font-size: 34px;
-    color: black;
+    color: var(--light-mode-Accent);
     font-weight: 700;
     text-align: center;
     margin-bottom: 0%;
@@ -197,7 +217,7 @@
 #song-name{
     margin-top: 0%;
     font-size: 20px;
-    color: black;
+    color: var(--light-mode-Accent);
     font-weight: 400;
     text-align: center;
 }
@@ -218,7 +238,7 @@
 
 #live-button{
     cursor: pointer;
-    color: rgb(241, 95, 95);
+    color: var(--light-mode-Secondary);
     font-size: 30px;
     
 }
@@ -231,6 +251,7 @@
     align-items: center; 
     width: 400px;
     height: 100px; 
+    /* color: var(--light-mode-Secondary); */
 
 }
 
