@@ -1,7 +1,6 @@
 
 import os
 import time
-
 from fastapi.responses import FileResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from songIdentify import identify_song 
@@ -10,7 +9,7 @@ from fastapi import FastAPI, Request
 import sys
 
 sys.stdout.reconfigure(encoding='utf-8')
-
+script_dir = os.path.dirname(os.path.abspath(__file__))
 def songInfo(radio_name):
     result = identify_song(radio_name)
     return result
@@ -18,12 +17,15 @@ def songInfo(radio_name):
 app = FastAPI()
 
 # Mount - upload the files to the base web
-app.mount("/assets", StaticFiles(directory=os.path.join('..', 'assets')), name="assets")
-app.mount('/static', StaticFiles(directory=os.path.join('..', 'dist')), name='static')
+assets_path = os.path.join(script_dir, '..', 'assets')
+dist_path = os.path.join(script_dir, '..', 'dist')
+app.mount("/assets", StaticFiles(directory=assets_path), name="assets")
+app.mount('/static', StaticFiles(directory=dist_path), name='static')
+
 # Serve the index.html file directly
 @app.get("/radio")
 async def serve_index():
-    file_path = r"..\dist\index.html"
+    file_path = os.path.join(dist_path, 'index.html')
     if os.path.isfile(file_path):
         return FileResponse(file_path)
     return {"message": "Index file not found"}

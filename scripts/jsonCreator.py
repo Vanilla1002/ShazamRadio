@@ -1,7 +1,9 @@
 import json
+import os
 import requests
+script_dir = os.path.dirname(os.path.abspath(__file__))
+output_root = os.path.join(script_dir, '..', 'src', 'radioStationsInfo.json')
 
-output_root = './src/radioStationsInfo.json'
 class RadioStation:
     def __init__(self, identifier, display_name, id, link):
         self.identifier = identifier

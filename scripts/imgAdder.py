@@ -5,9 +5,12 @@ from PIL import Image
 import os
 
 
+script_dir = os.path.dirname(os.path.abspath(__file__))
+print(script_dir)
+source_root = os.path.join(script_dir, 'StationPngsForWeb')
+output_root = os.path.join(script_dir, '.', '..', 'assets', '_images', 'StationsPng')
+print(output_root)
 
-source_root = 'scripts\StationPngsForWeb'
-output_root = r'.\.\assets\_images\StationsPng'
 new_size = (420, 400)
 def create_images():
     for image in os.listdir(source_root):
