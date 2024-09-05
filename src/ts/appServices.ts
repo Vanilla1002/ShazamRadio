@@ -41,7 +41,7 @@ async function sendSongRequest(radioName: string) {
         return;
     }
     const currentSong = await response.json();
-    console.log(currentSong);
+    //console.log(currentSong);
     if (currentSong == null){
         songDescription.innerHTML = ``;
         return;
@@ -163,14 +163,14 @@ rightArrow.addEventListener('click', openingBigStationTab);
 
 searchInput?.addEventListener("input", (e) =>{
 
-    const input = (e.target as HTMLInputElement).value;
-    for (const radioName in radioMap){
-        const isVisible = (radioMap[radioName].hebrewName).includes(input) || radioName.includes(input);
+    const input = (e.target as HTMLInputElement).value.toLowerCase(); 
+    for (const radioName in radioMap) {
+        const radioNameLower = radioName.toLowerCase(); 
+        const hebrewNameLower = radioMap[radioName].hebrewName.toLowerCase(); 
+        const isVisible = hebrewNameLower.includes(input) || radioNameLower.includes(input);
         const currentFigure = document.getElementById(radioName);
         currentFigure?.classList.toggle("hidden", !isVisible);
-        
-    }
-        
+    }     
 });
 
 //preventing enter
