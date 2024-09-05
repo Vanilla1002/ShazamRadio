@@ -10,6 +10,7 @@
   "license": "ISC",
   "devDependencies": {
     "file-loader": "^6.2.0",
+    "html-webpack-plugin": "^5.6.0",
     "ts-loader": "^9.5.1",
     "typescript": "^5.4.5",
     "webpack": "^5.91.0",
