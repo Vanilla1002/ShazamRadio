@@ -38,7 +38,8 @@ ShazamRadio operates by dynamically fetching radio stations, automatically ident
 Follow these steps to set up ShazamRadio on your local machine:
 1. **Clone the Repository**
 ```bash
-https://github.com/Vanilla1002/ShazamRadio.git
+git clone https://github.com/Vanilla1002/ShazamRadio.git
+cd ShazamRadio
 ```
 2. **Install Dependencies:** Navigate to the project directory and install the necessary Node.js modules:
 
