@@ -57,6 +57,8 @@ pip install -r requirements.txt
 cd backend
 python -m uvicorn server:app --reload
 ```
+and open [localhost:8000](http://localhost:8000/)
+
 Now, you can access ShazamRadio in your web browser and enjoy your personalized radio experience.
 ## Customizing Stations
 If you wish to add your customizing Stations to the web, you need to follow these steps
