@@ -1,226 +1,226 @@
 {
-  "glglz": {
-    "hebrewName": "גלגלצ",
-    "link": "https://glzwizzlv.bynetcdn.com/glglz_mp3"
-  },
-  "glz": {
-    "hebrewName": "גלי צהל",
-    "link": "https://glzwizzlv.bynetcdn.com/glz_mp3"
-  },
-  "darom": {
-    "hebrewName": "רדיו דרום",
-    "link": "https://cdn.cybercdn.live/Darom_97FM/Live/icecast.audio"
-  },
-  "darom101.5FM": {
-    "hebrewName": "רדיו דרום 101.5",
-    "link": "https://cdn.cybercdn.live/Darom_1015FM/Live/icecast.audio"
-  },
-  "kan88": {
-    "hebrewName": "כאן 88",
-    "link": "https://27873.live.streamtheworld.com/KAN_88.mp3"
-  },
-  "kanBet": {
-    "hebrewName": "כאן רשת ב",
-    "link": "https://22533.live.streamtheworld.com/KAN_BET.mp3"
-  },
-  "kanGimmel": {
-    "hebrewName": "כאן רשת ג",
-    "link": "https://25583.live.streamtheworld.com/KAN_GIMMEL.mp3"
-  },
-  "kanMoreshet": {
-    "hebrewName": "כאן מורשת",
-    "link": "https://25483.live.streamtheworld.com/KAN_MORESHET.mp3"
-  },
-  "kanKolHamusica": {
-    "hebrewName": "כאן קול המוזיקה",
-    "link": "https://27873.live.streamtheworld.com/KAN_KOL_HAMUSICA.mp3"
-  },
-  "kanReka": {
-    "hebrewName": "כאן רקע",
-    "link": "https://25483.live.streamtheworld.com/KAN_REKA.mp3"
-  },
-  "kanTarbut": {
-    "hebrewName": "כאן תרבות",
-    "link": "https://25483.live.streamtheworld.com/KAN_REKA.mp3"
-  },
-  "eco99FM": {
-    "hebrewName": "אקו 99fm",
-    "link": "https://eco01.livecdn.biz/ecolive/99fm_aac/icecast.audio"
-  },
-  "kolUniversity": {
-    "hebrewName": "קול האוניברסיטה",
-    "link": "https://1062onair.runi.ac.il/idc123.mp3"
-  },
-  "bgu": {
-    "hebrewName": "אוניברסיטת בן-גוריון",
-    "link": "https://bguradio.co/listen/bguradio/radio.mp3"
-  },
-  "103FM": {
-    "hebrewName": "רדיו 103FM",
-    "link": "https://cdn.cybercdn.live/103FM/Live/icecast.audio"
-  },
-  "tzafon104.5": {
-    "hebrewName": "צפון 104.5",
-    "link": "https://cdn.cybercdn.live/Tzafon_NonStop/Live_Audio/icecast.audio"
-  },
-  "ivriShesh": {
-    "hebrewName": "עברי שש",
-    "link": "https://streaming.radio.co/sa06221901/listen"
-  },
-  "radius": {
-    "hebrewName": "רדיו רדיוס",
-    "link": "https://cdn.cybercdn.live/Radios_100FM/Audio/icecast.audio"
-  },
-  "r90": {
-    "hebrewName": "רדיו 90",
-    "link": "https://cdn.cybercdn.live/Emtza_Haderech/Live_Audio/icecast.audio"
-  },
-  "telAviv102FM": {
-    "hebrewName": "רדיו תל אביב ",
-    "link": "https://102.livecdn.biz/102fm_mp3"
-  },
-  "shiridikaon": {
-    "hebrewName": "שירי דיכאון",
-    "link": "https://diki.mediacast.co.il/diki"
-  },
-  "shiriAhava": {
-    "hebrewName": "שירי אהבה",
-    "link": "https://liveradio.co.il/radiolove"
-  },
-  "kezevMizrahi": {
-    "hebrewName": "קצב מזרחי",
-    "link": "https://liveradio.co.il/radio_i"
-  },
-  "kezevYamTichoni": {
-    "hebrewName": "קצב ים-תיכוני",
-    "link": "https://liveradio.co.il:1040/;"
-  },
-  "kolRamatHasharon": {
-    "hebrewName": "קול רמת השרון",
-    "link": "https://radio.streamgates.net/stream/1036"
-  },
-  "kolBarama": {
-    "hebrewName": "קול ברמה",
-    "link": "https://cdn.cybercdn.live/Kol_Barama/Live_Audio/icecast.audio"
-  },
-  "kolHagolan": {
-    "hebrewName": "קול הגולן",
-    "link": "https://liveradio.co.il/kolhagolan"
-  },
-  "kolHagalilTop": {
-    "hebrewName": "קול הגליל",
-    "link": "https://radio.streamgates.net/stream/galil"
-  },
-  "kolHayamHaadom": {
-    "hebrewName": "קול הים התיכון",
-    "link": "https://cdn.cybercdn.live/Eilat_Radio/Live/icecast.audio"
-  },
-  "kolHaKinneret": {
-    "hebrewName": "קול הכינרת",
-    "link": "https://radio.streamgates.net/stream/kinneret"
-  },
-  "kolHamizrah": {
-    "hebrewName": "קול המזרח",
-    "link": "https://mzr.mediacast.co.il/mzradio"
-  },
-  "kolHamerkaz": {
-    "hebrewName": "קול המרכז",
-    "link": "https://liveradio.co.il:9050/;"
-  },
-  "kolHashfela": {
-    "hebrewName": "קול השפלה",
-    "link": "https://radio.streamgates.net/stream/1036kh"
-  },
-  "kolHai": {
-    "hebrewName": "קול חי",
-    "link": "https://live.kcm.fm/live:"
-  },
-  "kolYezreel": {
-    "hebrewName": "קול יזרעאל",
-    "link": "https://radio.streamgates.net/stream/yezreel"
-  },
-  "kolNatanya": {
-    "hebrewName": "קול נתניה",
-    "link": "https://radio.streamgates.net/stream/netanya"
-  },
-  "kolHanachal": {
-    "hebrewName": "קול הנחל",
-    "link": "https://cast4.asurahosting.com/proxy/yaniv/stream"
-  },
-  "kolRega": {
-    "hebrewName": "קול רגע",
-    "link": "https://cdn.cybercdn.live/Kol_Rega/Live_Audio/icecast.audio"
-  },
-  "sol": {
-    "hebrewName": "רדיו סול",
-    "link": "https://radio.streamgates.net/stream/sol"
-  },
-  "sahar": {
-    "hebrewName": "רדיו סהר",
-    "link": "https://live.ecast.co.il/stream/sahar"
-  },
-  "neto": {
-    "hebrewName": "רדיו נטו",
-    "link": "https://live.ecast.co.il/stream/radioneto1"
-  },
-  "noshmimMizrahit": {
-    "hebrewName": "נושמים מזרחית",
-    "link": "https://mzr.mediacast.co.il/mzradio"
-  },
-  "nostalgiaIsraeli": {
-    "hebrewName": "נוסטלגיה ישראלי",
-    "link": "http://194.213.4.197:8000/;stream/1"
-  },
-  "martitMeitarBalev": {
-    "hebrewName": "רדיו מרטיט מיתר בלב",
-    "link": "https://liveradio.co.il/wet"
-  },
-  "mizrahit": {
-    "hebrewName": "רדיו מזרחית",
-    "link": "https://mzr.mediacast.co.il/mzradio"
-  },
-  "mahotHachaim": {
-    "hebrewName": "רדיו מהות-החיים",
-    "link": "https://eol-live.cdnwiz.com/eol/eolsite/icecast.audio"
-  },
-  "levHamedina": {
-    "hebrewName": "רדיו לב המדינה",
-    "link": "https://cdn.cybercdn.live/Lev_Hamedina/Audio/icecast.audio"
-  },
-  "KaholYavan": {
-    "hebrewName": "רדיו כחול-יוון",
-    "link": "https://icecast.live/proxy/livegreece/livegreece"
-  },
-  "jerusalem": {
-    "hebrewName": "רדיו ירושלים",
-    "link": "https://cdn.cybercdn.live/JerusalemRadio/Live/icecast.audio"
-  },
-  "101.5": {
-    "hebrewName": "רדיו 101.5",
-    "link": "https://cdn.cybercdn.live/Hatahana_1015/Live_Audio/icecast.audio"
-  },
-  "hakatze": {
-    "hebrewName": "רדיו הקצה",
-    "link": "https://kzradio.mediacast.co.il/kzradio_live/kzradio/icecast.audio"
-  },
-  "galiIsrael": {
-    "hebrewName": "רדיו גלי-ישראל",
-    "link": "https://cdn.cybercdn.live/Galei_Israel/Live/icecast.audio"
-  },
-  "oranim": {
-    "hebrewName": "רדיו אורנים",
-    "link": "https://radio.streamgates.net/stream/oranim"
-  },
-  "anime": {
-    "hebrewName": "אנימה",
-    "link": "https://stream.animeradio.de/animeradio.mp3"
-  },
-  "jazzFM": {
-    "hebrewName": "ג'אז",
-    "link": "https://jazzfm91.streamb.live/SB00009"
-  },
-  "Lo-fi": {
-    "hebrewName": "לו-פי",
-    "link": "https://ec3.yesstreaming.net:3755/stream"
-  }
+    "glglz": {
+        "displayName": "גלגלצ",
+        "link": "https://glzwizzlv.bynetcdn.com/glglz_mp3"
+    },
+    "glz": {
+        "displayName": "גלי צהל",
+        "link": "https://glzwizzlv.bynetcdn.com/glz_mp3"
+    },
+    "darom": {
+        "displayName": "רדיו דרום",
+        "link": "https://cdn.cybercdn.live/Darom_97FM/Live/icecast.audio"
+    },
+    "darom101.5FM": {
+        "displayName": "רדיו דרום 101.5",
+        "link": "https://cdn.cybercdn.live/Darom_1015FM/Live/icecast.audio"
+    },
+    "kan88": {
+        "displayName": "כאן 88",
+        "link": "https://27873.live.streamtheworld.com/KAN_88.mp3"
+    },
+    "kanBet": {
+        "displayName": "כאן רשת ב",
+        "link": "https://22533.live.streamtheworld.com/KAN_BET.mp3"
+    },
+    "kanGimmel": {
+        "displayName": "כאן רשת ג",
+        "link": "https://25583.live.streamtheworld.com/KAN_GIMMEL.mp3"
+    },
+    "kanMoreshet": {
+        "displayName": "כאן מורשת",
+        "link": "https://25483.live.streamtheworld.com/KAN_MORESHET.mp3"
+    },
+    "kanKolHamusica": {
+        "displayName": "כאן קול המוזיקה",
+        "link": "https://27873.live.streamtheworld.com/KAN_KOL_HAMUSICA.mp3"
+    },
+    "kanReka": {
+        "displayName": "כאן רקע",
+        "link": "https://25483.live.streamtheworld.com/KAN_REKA.mp3"
+    },
+    "kanTarbut": {
+        "displayName": "כאן תרבות",
+        "link": "https://25483.live.streamtheworld.com/KAN_REKA.mp3"
+    },
+    "eco99FM": {
+        "displayName": "אקו 99",
+        "link": "https://eco01.livecdn.biz/ecolive/99fm_aac/icecast.audio"
+    },
+    "kolUniversity": {
+        "displayName": "קול האוניברסיטה",
+        "link": "https://1062onair.runi.ac.il/idc123.mp3"
+    },
+    "bgu": {
+        "displayName": "אוניברסיטת בן-גוריון",
+        "link": "https://bguradio.co/listen/bguradio/radio.mp3"
+    },
+    "103FM": {
+        "displayName": "רדיו 103FM",
+        "link": "https://cdn.cybercdn.live/103FM/Live/icecast.audio"
+    },
+    "tzafon104.5": {
+        "displayName": "צפון 104.5",
+        "link": "https://cdn.cybercdn.live/Tzafon_NonStop/Live_Audio/icecast.audio"
+    },
+    "ivriShesh": {
+        "displayName": "עברי שש",
+        "link": "https://streaming.radio.co/sa06221901/listen"
+    },
+    "radius": {
+        "displayName": "רדיו רדיוס",
+        "link": "https://cdn.cybercdn.live/Radios_100FM/Audio/icecast.audio"
+    },
+    "r90": {
+        "displayName": "רדיו 90",
+        "link": "https://cdn.cybercdn.live/Emtza_Haderech/Live_Audio/icecast.audio"
+    },
+    "telAviv102FM": {
+        "displayName": "רדיו תל אביב ",
+        "link": "https://102.livecdn.biz/102fm_mp3"
+    },
+    "shiridikaon": {
+        "displayName": "שירי דיכאון",
+        "link": "https://diki.mediacast.co.il/diki"
+    },
+    "shiriAhava": {
+        "displayName": "שירי אהבה",
+        "link": "https://liveradio.co.il/radiolove"
+    },
+    "kezevMizrahi": {
+        "displayName": "קצב מזרחי",
+        "link": "https://liveradio.co.il/radio_i"
+    },
+    "kezevYamTichoni": {
+        "displayName": "קצב ים-תיכוני",
+        "link": "https://liveradio.co.il:1040/;?type=http&nocache=135533"
+    },
+    "kolRamatHasharon": {
+        "displayName": "קול רמת השרון",
+        "link": "https://radio.streamgates.net/stream/1036"
+    },
+    "kolBarama": {
+        "displayName": "קול ברמה",
+        "link": "https://cdn.cybercdn.live/Kol_Barama/Live_Audio/icecast.audio"
+    },
+    "kolHagolan": {
+        "displayName": "קול הגולן",
+        "link": "https://liveradio.co.il/kolhagolan"
+    },
+    "kolHagalilTop": {
+        "displayName": "קול הגליל",
+        "link": "https://radio.streamgates.net/stream/galil"
+    },
+    "kolHayamHaadom": {
+        "displayName": "קול הים התיכון",
+        "link": "https://cdn.cybercdn.live/Eilat_Radio/Live/icecast.audio"
+    },
+    "kolHaKinneret": {
+        "displayName": "קול הכינרת",
+        "link": "https://radio.streamgates.net/stream/kinneret"
+    },
+    "kolHamizrah": {
+        "displayName": "קול המזרח",
+        "link": "https://mzr.mediacast.co.il/mzradio"
+    },
+    "kolHamerkaz": {
+        "displayName": "קול המרכז",
+        "link": "https://liveradio.co.il:9050/;"
+    },
+    "kolHashfela": {
+        "displayName": "קול השפלה",
+        "link": "https://radio.streamgates.net/stream/1036kh"
+    },
+    "kolHai": {
+        "displayName": "קול חי",
+        "link": "https://live.kcm.fm/live:"
+    },
+    "kolYezreel": {
+        "displayName": "קול יזרעאל",
+        "link": "https://radio.streamgates.net/stream/yezreel"
+    },
+    "kolNatanya": {
+        "displayName": "קול נתניה",
+        "link": "https://radio.streamgates.net/stream/netanya"
+    },
+    "kolHanachal": {
+        "displayName": "קול הנחל",
+        "link": "https://cast4.asurahosting.com/proxy/yaniv/stream"
+    },
+    "kolRega": {
+        "displayName": "קול רגע",
+        "link": "https://cdn.cybercdn.live/Kol_Rega/Live_Audio/icecast.audio"
+    },
+    "sol": {
+        "displayName": "רדיו סול",
+        "link": "https://radio.streamgates.net/stream/sol"
+    },
+    "sahar": {
+        "displayName": "רדיו סהר",
+        "link": "https://live.ecast.co.il/stream/sahar"
+    },
+    "neto": {
+        "displayName": "רדיו נטו",
+        "link": "https://live.ecast.co.il/stream/radioneto1"
+    },
+    "noshmimMizrahit": {
+        "displayName": "נושמים מזרחית",
+        "link": "https://mzr.mediacast.co.il/mzradio"
+    },
+    "nostalgiaIsraeli": {
+        "displayName": "נוסטלגיה ישראלי",
+        "link": "http://194.213.4.197:8000/;stream/1"
+    },
+    "martitMeitarBalev": {
+        "displayName": "רדיו מרטיט מיתר בלב",
+        "link": "https://liveradio.co.il/wet"
+    },
+    "mizrahit": {
+        "displayName": "רדיו מזרחית",
+        "link": "https://mzr.mediacast.co.il/mzradio"
+    },
+    "mahotHachaim": {
+        "displayName": "רדיו מהות-החיים",
+        "link": "https://eol-live.cdnwiz.com/eol/eolsite/icecast.audio"
+    },
+    "levHamedina": {
+        "displayName": "רדיו לב המדינה",
+        "link": "https://cdn.cybercdn.live/Lev_Hamedina/Audio/icecast.audio"
+    },
+    "KaholYavan": {
+        "displayName": "רדיו כחול-יוון",
+        "link": "https://icecast.live/proxy/livegreece/livegreece"
+    },
+    "jerusalem": {
+        "displayName": "רדיו ירושלים",
+        "link": "https://cdn.cybercdn.live/JerusalemRadio/Live/icecast.audio"
+    },
+    "101.5": {
+        "displayName": "רדיו 101.5",
+        "link": "https://cdn.cybercdn.live/Hatahana_1015/Live_Audio/icecast.audio"
+    },
+    "hakatze": {
+        "displayName": "רדיו הקצה",
+        "link": "https://kzradio.mediacast.co.il/kzradio_live/kzradio/icecast.audio"
+    },
+    "galiIsrael": {
+        "displayName": "רדיו גלי-ישראל",
+        "link": "https://cdn.cybercdn.live/Galei_Israel/Live/icecast.audio"
+    },
+    "oranim": {
+        "displayName": "רדיו אורנים",
+        "link": "https://radio.streamgates.net/stream/oranim"
+    },
+    "anime": {
+        "displayName": "אנימה",
+        "link": "https://stream.animeradio.de/animeradio.mp3"
+    },
+    "jazzFM": {
+        "displayName": "ג'אז",
+        "link": "https://jazzfm91.streamb.live/SB00009"
+    },
+    "Lo-fi": {
+        "displayName": "לו-פי",
+        "link": "https://ec3.yesstreaming.net:3755/stream"
+    }
 }

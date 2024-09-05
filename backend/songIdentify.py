@@ -44,7 +44,9 @@ async def identify_song(audio_name: str)->InformationOfSong:
         return None
     audio_url = dict[audio_name]
     audio_file_place = fr"{audio_name}.mp3"
-        
+    #to prevent errors
+    if os.path.exists(audio_file_place):
+        os.remove(audio_file_place)
 
     stream = ffmpeg.input(audio_url, t=10)
     stream.output(audio_file_place).run()
@@ -62,7 +64,7 @@ async def identify_song(audio_name: str)->InformationOfSong:
                 share.get('subject', 'Unknown Subject'),
                 share.get('href', 'Unknown Href')
             )
-    os.remove(audio_file_place)
+    
     return None
 
 

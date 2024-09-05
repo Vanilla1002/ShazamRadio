@@ -1,63 +1,18 @@
-import { Socket } from 'dgram';
-import radioStationsInfo from './radioStationsInfo.json';
 
-class RadioToHebrewNames{
-    hebrewName: string; 
-    link: string;
-
-    public constructor(hebrewName: string,link: string){
-        this.hebrewName = hebrewName;
-        this.link = link
-    }
-}
-const radioMap: {[key: string]: RadioToHebrewNames}={};
-function createRadioDict(dict: {[key: string]: RadioToHebrewNames}){
-    let helper = false;
-    let newHebrewName;
-    for (const [key,value] of Object.entries(radioStationsInfo)){
-        for (const [_,value1] of Object.entries(value)){
-            if (!helper){
-                newHebrewName = value1
-                helper = true;
-            }
-            else{
-                dict[key]=new RadioToHebrewNames(newHebrewName,value1);
-                helper = false;
-            }
-            
-        }
-    }
-}
-createRadioDict(radioMap);
+import {radioMap} from "./radioMap"
 
 
+import { body, 
+    main, searchInput, topBar, nightMode, search, searchIcon,
+    enlargedView, backArrow, rightArrow, enlargedImg, stationNameBig,
+    liveButton, pauseButton, songDescription, volumeSlider, volumeOffIcon, 
+    volumeMaxIcon } from "./domElements";
 
-//DOM 
-const body = document.querySelector('body');
-const main = document.getElementById("screen");
-const searchInput = document.getElementById("search-input") as HTMLInputElement;
-const topBar = document.getElementById("bar");
-const nightMode = document.getElementById("dark-mode-icon");
-const search = document.getElementById("search"); //looks
-const searchIcon = document.getElementById("searchIcon");
-
+import { lightModePrimary, lightModeSecondary, lightModeAccent,
+    darkModePrimary, darkModeSecondary, darkModeAccent } from "./cssVariables";
 
 
-const enlargedView = document.getElementById("enlarged-view");
-const backArrow = document.getElementById("back-arrow");
-const rightArrow = document.getElementById("right-arrow-id");
-const enlargedImg  = document.getElementById("enlarged-img") as HTMLImageElement;
-const stationNameBig = document.getElementById("station-name-big");
-const liveButton = document.getElementById("live-button");
-const pauseButton = document.getElementById("pause-button");
-const songDestcripton = document.getElementById('song-name');
-
-
-const volumeSlider = document.getElementById("slider-vol") as HTMLInputElement;
-const volumeOffIcon = document.getElementById("volume-off");
-const volumeMaxIcon = document.getElementById("volume-max");
-
-
+const defaultImgSource = '../assets/_images/StationsPng/default.png';
 let currentStationAudio: HTMLAudioElement = new Audio();
 let currentStationName: string = '';
 let isRadio: boolean = false;
@@ -70,21 +25,7 @@ let everstopped : boolean = false;
 let lastsong : {};
 let currentVolume = parseInt(volumeSlider.value)/100;
 
-//CSS variables
-function getCSSVariableValue(variableName: string): string {
-    return getComputedStyle(document.documentElement).getPropertyValue(variableName).trim();
-  }
-  
-  const lightModePrimary = getCSSVariableValue('--light-mode-primary');
-  const lightModeSecondary = getCSSVariableValue('--light-mode-Secondary');
-  const lightModeAccent = getCSSVariableValue('--light-mode-Accent');
-  
-  const darkModePrimary = getCSSVariableValue('--dark-mode-primary');
-  const darkModeSecondary = getCSSVariableValue('--dark-mode-Secondary');
-  const darkModeAccent = getCSSVariableValue('--dark-mode-Accent');
-
-
-//send request, and get response
+//networking
 async function sendSongRequest(radioName: string) {
     const response = await fetch('/identify_song', {
         method: 'POST',
@@ -95,23 +36,22 @@ async function sendSongRequest(radioName: string) {
     });
 
     if (!response.ok) {
-        songDestcripton.innerHTML = ``;
+        songDescription.innerHTML = ``;
         console.error('Failed to fetch:', response.statusText);
         return;
     }
     const currentSong = await response.json();
     console.log(currentSong);
     if (currentSong == null){
-        songDestcripton.innerHTML = ``;
+        songDescription.innerHTML = ``;
         return;
     }
     if (currentSong != lastsong){
-        songDestcripton.innerHTML = `${currentSong['songName']} - ${currentSong['singer']}`;
-        songDestcripton.setAttribute("href", `${currentSong['href']}`);
+        songDescription.innerHTML = `${currentSong['songName']} - ${currentSong['singer']}`;
+        songDescription.setAttribute("href", `${currentSong['href']}`);
         lastsong = currentSong;
     }
 } 
-
 
 function sendUpdate() {
     if (isRadio && !everstopped ){
@@ -123,21 +63,21 @@ setInterval(function(){
     sendUpdate()
 }, 30000)
 
-
-
-
 //creating the main (all the stations)
 for (const radioName in radioMap){
-    const imgSource = `../assets/_images/StationsPng/${radioName}.png`;
     
-    
+    let imgSource = `../assets/_images/StationsPng/${radioName}.png`;
     const element = document.createElement('img');
     element.src = imgSource;
-    
     element.classList.add('pictures');
 
+    element.onerror = () => {
+        imgSource = defaultImgSource;
+        element.src = defaultImgSource;
+    };
+
     //pressable
-    element.addEventListener('click', () => whenChosingStation(radioName));
+    element.addEventListener('click', () => whenChosingStation(radioName, imgSource));
 
     const elementDescription = document.createElement('figcaption');
     elementDescription.classList.add('description');
@@ -166,7 +106,7 @@ function whenChosingStation(stationId : string, imgSource : string = `../assets/
 }
 
 async function startingTheStation(stationId : string){
-    songDestcripton.innerHTML = ``;
+    songDescription.innerHTML = ``;
     
     currentStationAudio.pause();
     currentStationAudio = new Audio(radioMap[stationId].link);
@@ -257,15 +197,18 @@ nightMode?.addEventListener("click", () => {
         const figcaption = figure.querySelector('figcaption');
 
         // name
+        if (figcaption){
         figcaption.classList.toggle("description", !isDark);
         figcaption.classList.toggle("descriptionDark", isDark);
-
+        }
         //song name
-        songDestcripton.style.color = isDark ? darkModeAccent : lightModeAccent;
+        songDescription.style.color = isDark ? darkModeAccent : lightModeAccent;
 
         // pictures border
+        if (img){
         img.classList.toggle("pictures", !isDark);
         img.classList.toggle("picturesDark", isDark);
+        }
     });
 
     // search looks
@@ -404,7 +347,7 @@ function ifStopped(){
     everstopped = true;
     liveButton.style.display = '';
     setTimeout(()=>{
-        songDestcripton.innerHTML = ``;
+        songDescription.innerHTML = ``;
     },10000);
     
 }

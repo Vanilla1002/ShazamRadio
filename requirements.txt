@@ -1,0 +1,7 @@
+fastapi==0.112.2
+ffmpeg_python==0.2.0
+Pillow==10.1.0
+Pillow==10.4.0
+Requests==2.32.3
+shazamio==0.6.0
+uvicorn==0.30.6
