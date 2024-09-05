@@ -45,8 +45,11 @@ https://github.com/Vanilla1002/ShazamRadio.git
 ```bash
 npm install
 ```
+also install Python libraries using
+```bash
+pip install -r requirements.txt
+```
 3. **Customize Stations (optional):** If you want to customize the stations, [skip to the Customizing Stations section](#customizing-stations) Otherwise, proceed to the next step to run the application.
-
 
 4. **Start the Backend Server:** Navigate to the backend directory and start the server:
 ```bash
