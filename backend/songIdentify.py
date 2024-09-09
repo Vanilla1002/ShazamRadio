@@ -43,13 +43,13 @@ async def identify_song(audio_name: str)->InformationOfSong:
     if audio_name not in dict:
         return None
     audio_url = dict[audio_name]
-    audio_file_place = fr"{audio_name}.mp3"
+    audio_file_place = fr"{audio_name}.wav"
     #to prevent errors
     if os.path.exists(audio_file_place):
         os.remove(audio_file_place)
 
     stream = ffmpeg.input(audio_url, t=10)
-    stream.output(audio_file_place).run()
+    stream.output(audio_file_place, format="wav").run()
 
     shazam = Shazam()
     out = await shazam.recognize(audio_file_place)
