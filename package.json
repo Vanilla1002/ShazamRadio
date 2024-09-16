@@ -4,7 +4,8 @@
   "description": "A website that full of radio station from israel.",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack --config webpack.config.js"
+    "build": "webpack --config webpack.config.js",
+    "install": "npm install && pip install -r requirements.txt"
   },
   "author": "",
   "license": "ISC",

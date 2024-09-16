@@ -42,15 +42,12 @@ git clone https://github.com/Vanilla1002/ShazamRadio.git
 
 cd ShazamRadio
 ```
-2. **Install Dependencies:** Navigate to the project directory and install the necessary Node.js modules:
+2. **Install Dependencies:** Navigate to the project directory and install the necessary Node.js modules, will also install Python libraries:
 
 ```bash
 npm install
 ```
-also install Python libraries using
-```bash
-pip install -r requirements.txt
-```
+
 3. **Customize Stations (optional):** If you want to customize the stations, [skip to the Customizing Stations section](#customizing-stations) Otherwise, proceed to the next step to run the application.
 
 4. **Start the Backend Server:** Navigate to the backend directory and start the server:
