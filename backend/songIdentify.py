@@ -64,6 +64,7 @@ async def identify_song(audio_name: str)->InformationOfSong:
                 share.get('href', 'Unknown Href')
             )
     
+    os.remove(audio_file_place)
     return None
 
 
