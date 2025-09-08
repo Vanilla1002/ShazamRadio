@@ -35,7 +35,6 @@ class InformationOfSong:
             'href': self.href
         }
         
-    
 
 logging.basicConfig(level=logging.INFO)
 
