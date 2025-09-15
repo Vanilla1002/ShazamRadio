@@ -4,3 +4,5 @@ Pillow==10.4.0
 Requests==2.32.3
 shazamio==0.6.0
 uvicorn==0.30.6
+datetime
+feedparser

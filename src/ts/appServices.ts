@@ -1,3 +1,53 @@
+// News display logic
+const newsContent = document.getElementById("news-content") as HTMLDivElement;
+let currentArticleIndex = 0;
+
+function renderCurrentArticle() {
+  if (!articles.length || !newsContent) {
+    newsContent.innerHTML = "<span style='opacity:0.6;'>No news available</span>";
+    return;
+  }
+  const article = articles[currentArticleIndex % articles.length];
+  newsContent.innerHTML = `
+    <div class="news-article" style="display:flex;flex-direction:column;align-items:center;width:100%;">
+  <span class="news-time" style="font-size:13px;font-weight:500;margin-bottom:2px;align-self:center;text-align:center;width:100%;">${article.hh_mm || ""}</span>
+      <div class="news-title-container" style="width:100%;overflow-wrap:break-word;display:flex;justify-content:center;">
+  <a href="${article.link}" target="_blank" class="news-title" style="font-size:16px;font-weight:500;text-decoration:none;display:block;white-space:normal;word-break:break-word;line-height:1.3;text-align:center;max-width:90vw;">
+          ${article.title}
+        </a>
+      </div>
+    </div>
+  `;
+}
+
+function fadeNewsOutIn(callback: () => void) {
+  if (!newsContent) return;
+  newsContent.style.transition = "opacity 0.5s";
+  newsContent.style.opacity = "0";
+  setTimeout(() => {
+    callback();
+    newsContent.style.opacity = "1";
+  }, 500);
+}
+
+function startNewsCycle() {
+  renderCurrentArticle();
+  newsContent.style.opacity = "1";
+  newsContent.style.transition = "opacity 0.5s";
+  setInterval(() => {
+    currentArticleIndex = (currentArticleIndex + 1) % articles.length;
+    fadeNewsOutIn(renderCurrentArticle);
+  }, 10000);
+}
+
+// Start cycling after first fetch
+fetchNews().then(() => {
+  startNewsCycle();
+});
+// Start cycling after first fetch
+fetchNews().then(() => {
+  startNewsCycle();
+});
 import { radioMap } from "./radioMap";
 
 import {
@@ -81,6 +131,46 @@ setInterval(function () {
   sendUpdate();
 }, 30000);
 
+
+
+// You can include any data in the body if needed
+const requestData = {
+  someKey: "someValue"
+};
+
+//news suction
+interface Article {
+  title: string;
+  link: string;
+  published: string;
+  hh_mm?: string;
+}
+
+let articles: Article[] = [];
+
+async function fetchNews() {
+  try {
+    const response = await fetch("/news");
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+    const newArticles: Article[] = await response.json();
+
+    if (newArticles.length > 0) {
+      // Replace the local list completely
+      articles = newArticles.slice(0, 30); // keep only 30 latest
+      console.log("Updated articles:", articles);
+    } else {
+      console.log("No articles received");
+    }
+  } catch (err) {
+    console.error("Error fetching news:", err);
+  }
+}
+
+// Fetch every 5 minutes
+setInterval(fetchNews, 300000);
+fetchNews();
+
 //creating the main (all the stations)
 for (const radioName in radioMap) {
   let imgSource = `../assets/_images/StationsPng/${radioName}.png`;
@@ -141,6 +231,7 @@ async function startingTheStation(stationId: string) {
   everstopped = false;
   isRadio = true;
   sendSongRequest(stationId);
+  fetchNews();
 }
 
 function backToMainScreen() {
@@ -215,7 +306,15 @@ topBar.addEventListener("submit", (e) => {
 
 //darkmode
 nightMode?.addEventListener("click", () => {
+
   isDark = !isDark;
+
+  // Toggle dark class on body for CSS selectors
+  if (isDark) {
+    document.body.classList.add("dark");
+  } else {
+    document.body.classList.remove("dark");
+  }
 
   // nightmode icon
   nightMode.classList.toggle("fa-moon", !isDark);

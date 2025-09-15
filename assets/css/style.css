@@ -1,3 +1,17 @@
+/* News title color for light/dark mode, matching time color */
+.news-title {
+  color: #222 !important;
+  transition: color 0.3s;
+}
+body.dark .news-title {
+  color: #f2f2f7 !important;
+}
+.news-time {
+  color: #007aff;
+}
+body.dark .news-time {
+  color: #007aff;
+}
 /* Direct chevron icon size and centering for arrows */
 #back-arrow.chevron,
 #right-arrow.chevron {

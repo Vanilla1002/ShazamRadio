@@ -1,12 +1,14 @@
 
 import os
 import time
-from fastapi.responses import FileResponse, RedirectResponse
+from fastapi.responses import FileResponse, RedirectResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
-from songIdentify import identify_song 
 import uvicorn
 from fastapi import FastAPI, Request 
 import sys
+
+from songIdentify import identify_song 
+from newsWrapper import  load_news, compare_articles, send_news
 
 sys.stdout.reconfigure(encoding='utf-8')
 script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -33,6 +35,7 @@ async def serve_index():
 
 cache = {} # key : radio_name, value: {InformationOfSong, time.time()} informationofdaughter
 last_run_time = None
+articles_cache = [] 
 
 
 
@@ -53,6 +56,19 @@ def what_to_send(result):
         return result.__dict__()
     return None
 
+@app.get("/news")
+async def news_endpoint():
+    global last_run_time
+    global articles_cache
+
+    current_time = time.time()
+    # Refresh cache only if >5 minutes or first request
+    if last_run_time is None or (current_time - last_run_time >= 300):
+        articles_cache = load_news()  # your existing function to fetch RSS
+        last_run_time = current_time
+
+    # Send full cached list
+    return JSONResponse(content=[article.__dict__() for article in articles_cache])
 
 
 # catch-all route for other paths and return to /
