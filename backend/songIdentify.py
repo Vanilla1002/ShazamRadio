@@ -6,7 +6,8 @@ from shazamio import Shazam
 
 dict = {}
 
-with open(os.path.join(os.path.dirname(__file__), r"..\src\radioStationsInfo.json"), 'r', encoding='utf-8') as file:
+stations_info_path = os.path.join(os.path.dirname(__file__), '..', 'src', 'radioStationsInfo.json')
+with open(stations_info_path, 'r', encoding='utf-8') as file:
     data = json.load(file)
     for i in data:
         dict[i] = data[i]['link']
@@ -42,10 +43,12 @@ async def identify_song(audio_name: str)->InformationOfSong:
     if audio_name not in dict:
         return None
     audio_url = dict[audio_name]
-    audio_file_place = fr"{audio_name}.wav"
+    audio_file_place = os.path.join(os.path.dirname(__file__), f"{audio_name}.wav")
     #to prevent errors
-    if os.path.exists(audio_file_place):
+    try:
         os.remove(audio_file_place)
+    except FileNotFoundError:
+        pass
 
     stream = ffmpeg.input(audio_url, t=10)
     stream.output(audio_file_place, format="wav").run()
