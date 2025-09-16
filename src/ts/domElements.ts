@@ -20,6 +20,9 @@ const volumeSlider = document.getElementById("slider-vol") as HTMLInputElement;
 const volumeOffIcon = document.getElementById("volume-off") as HTMLSpanElement;
 const volumeMaxIcon = document.getElementById("volume-max") as HTMLSpanElement;
 
+const newsContent = document.getElementById("news-content") as HTMLDivElement;
+
+
 export { 
     body, 
     main, 
@@ -38,5 +41,6 @@ export {
     songDescription, 
     volumeSlider, 
     volumeOffIcon, 
-    volumeMaxIcon
+    volumeMaxIcon,
+    newsContent
 }

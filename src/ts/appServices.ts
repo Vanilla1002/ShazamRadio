@@ -1,53 +1,3 @@
-// News display logic
-const newsContent = document.getElementById("news-content") as HTMLDivElement;
-let currentArticleIndex = 0;
-
-function renderCurrentArticle() {
-  if (!articles.length || !newsContent) {
-    newsContent.innerHTML = "<span style='opacity:0.6;'>No news available</span>";
-    return;
-  }
-  const article = articles[currentArticleIndex % articles.length];
-  newsContent.innerHTML = `
-    <div class="news-article" style="display:flex;flex-direction:column;align-items:center;width:100%;">
-  <span class="news-time" style="font-size:13px;font-weight:500;margin-bottom:2px;align-self:center;text-align:center;width:100%;">${article.hh_mm || ""}</span>
-      <div class="news-title-container" style="width:100%;overflow-wrap:break-word;display:flex;justify-content:center;">
-  <a href="${article.link}" target="_blank" class="news-title" style="font-size:16px;font-weight:500;text-decoration:none;display:block;white-space:normal;word-break:break-word;line-height:1.3;text-align:center;max-width:90vw;">
-          ${article.title}
-        </a>
-      </div>
-    </div>
-  `;
-}
-
-function fadeNewsOutIn(callback: () => void) {
-  if (!newsContent) return;
-  newsContent.style.transition = "opacity 0.5s";
-  newsContent.style.opacity = "0";
-  setTimeout(() => {
-    callback();
-    newsContent.style.opacity = "1";
-  }, 500);
-}
-
-function startNewsCycle() {
-  renderCurrentArticle();
-  newsContent.style.opacity = "1";
-  newsContent.style.transition = "opacity 0.5s";
-  setInterval(() => {
-    currentArticleIndex = (currentArticleIndex + 1) % articles.length;
-    fadeNewsOutIn(renderCurrentArticle);
-  }, 10000);
-}
-
-// Start cycling after first fetch
-fetchNews().then(() => {
-  startNewsCycle();
-});
-// Start cycling after first fetch
-fetchNews().then(() => {
-  startNewsCycle();
-});
 import { radioMap } from "./radioMap";
 
 import {
@@ -69,6 +19,7 @@ import {
   volumeSlider,
   volumeOffIcon,
   volumeMaxIcon,
+  newsContent
 } from "./domElements";
 
 import {
@@ -158,7 +109,8 @@ async function fetchNews() {
     if (newArticles.length > 0) {
       // Replace the local list completely
       articles = newArticles.slice(0, 30); // keep only 30 latest
-      console.log("Updated articles:", articles);
+      // console.log("Updated articles:", articles);
+      resetNewsCycle();
     } else {
       console.log("No articles received");
     }
@@ -167,9 +119,71 @@ async function fetchNews() {
   }
 }
 
+let currentArticleIndex = 0;
+
+function renderCurrentArticle() {
+  if (!articles.length || !newsContent) {
+    newsContent.innerHTML = "<span style='opacity:0.6;'>No news available</span>";
+    return;
+  }
+  const article = articles[currentArticleIndex % articles.length];
+  newsContent.innerHTML = `
+    <div class='news-article'>
+      <span class='news-time'>${article.hh_mm || ''}</span>
+      <div class='news-title-container'>
+        <a href='${article.link}' target='_blank' class='news-title'>
+          <span dir="auto">${article.title}</span>
+        </a>
+      </div>
+    </div>
+  `;
+}
+
+function fadeNewsOutIn(callback: () => void) {
+  if (!newsContent) return;
+  newsContent.style.transition = "opacity 0.5s";
+  newsContent.style.opacity = "0";
+  setTimeout(() => {
+    callback();
+    newsContent.style.opacity = "1";
+  }, 500);
+}
+
+function startNewsCycle() {
+  renderCurrentArticle();
+  newsContent.style.opacity = "1";
+  newsContent.style.transition = "opacity 0.5s";
+  setInterval(() => {
+    if (articles.length > 0) {
+      currentArticleIndex = (currentArticleIndex + 1) % articles.length;
+      fadeNewsOutIn(renderCurrentArticle);
+    }
+  }, 10000);
+}
+
+// Start cycling after first fetch, only once
+
+let newsCycleInterval: ReturnType<typeof setInterval> | null = null;
+
+function resetNewsCycle() {
+  if (newsCycleInterval) clearInterval(newsCycleInterval);
+  currentArticleIndex = 0;
+  renderCurrentArticle();
+  newsContent.style.opacity = "1";
+  newsContent.style.transition = "opacity 0.5s";
+  newsCycleInterval = setInterval(() => {
+    if (articles.length > 0) {
+      currentArticleIndex = (currentArticleIndex + 1) % articles.length;
+      fadeNewsOutIn(renderCurrentArticle);
+    }
+  }, 10000);
+}
+
+fetchNews().then(() => {
+  resetNewsCycle();
+});
 // Fetch every 5 minutes
 setInterval(fetchNews, 300000);
-fetchNews();
 
 //creating the main (all the stations)
 for (const radioName in radioMap) {
