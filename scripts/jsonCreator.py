@@ -33,14 +33,18 @@ def get_id(radio_identifier):
 
     if data['hits']['hits']:
         
-        url = data['hits']['hits'][0]['_source']['url']
+        url = data['hits']['hits'][0]['_source']['page']['url']
         return url.split('/')[-1]
     
     return None
     
-def get_station() :
+def get_station():
     radio_identifier = input('Enter the radio identifier: ').strip().lower()
-    radio_display_name = input('Enter the radio display name: ')
+    while True:
+        radio_display_name = input('Enter the radio display name: ').strip()
+        if radio_display_name:
+            break
+        print('Display name cannot be empty. Please try again.')
     radio_id = get_id(radio_identifier)
     if radio_id is None:
         print('Invalid entry. Please try again.')
@@ -48,7 +52,6 @@ def get_station() :
     radio_link = f'https://radio.garden/api/ara/content/listen/{radio_id}/channel.mp3'
     new_station = RadioStation(radio_identifier, radio_display_name, radio_id, radio_link)
     return new_station.__dict__()
-
 
 
 def create_dict() -> dict:

@@ -1,5 +1,6 @@
-#run this script after you added all of the station images in 'scripts\StationPngsForWeb'
-#make sure you named the images with the station name like in the JSON file
+
+# Run this script after you add all of the station images in 'scripts/StationPngsForWeb'.
+# Make sure you name the images with the station name as in the JSON file.
 
 from PIL import Image
 import os
@@ -8,7 +9,7 @@ import os
 script_dir = os.path.dirname(os.path.abspath(__file__))
 print(script_dir)
 source_root = os.path.join(script_dir, 'StationPngsForWeb')
-output_root = os.path.join(script_dir, '.', '..', 'assets', '_images', 'StationsPng')
+output_root = os.path.abspath(os.path.join(script_dir, '..', 'assets', '_images', 'StationsPng'))
 print(output_root)
 
 new_size = (420, 400)

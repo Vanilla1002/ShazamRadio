@@ -29,7 +29,7 @@
   },
   "kanMoreshet": {
     "displayName": "כאן מורשת",
-    "link": "https://25483.live.streamtheworld.com/KAN_MORESHET.mp3"
+    "link": "https://27793.live.streamtheworld.com/KAN_MORESHET.mp3"
   },
   "kanKolHamusica": {
     "displayName": "כאן קול המוזיקה",
@@ -78,6 +78,10 @@
   "telAviv102FM": {
     "displayName": "רדיו תל אביב ",
     "link": "https://102.livecdn.biz/102fm_mp3"
+  },
+  "radio haifa 107.5 fm": {
+    "displayName": "רדיו חיפה",
+    "link": "https://radio.garden/api/ara/content/listen/fZYPJwCW/channel.mp3"
   },
   "shiridikaon": {
     "displayName": "שירי דיכאון",
