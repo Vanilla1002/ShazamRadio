@@ -2,7 +2,9 @@
 
 ShazamRadio is a modern and easy-to-use web-based radio application with a sleek UI. It allows users to listen to their favorite radio stations, automatically identify currently playing songs, and easily add personal stations. ShazamRadio is built with a TypeScript frontend and a Python backend, offering a seamless and dynamic user experience.
 
-![shazam radio main](https://github.com/user-attachments/assets/53f89650-9cc4-4a94-92e7-9e31040f64d2)
+![shazam radio main](https://github.com/user-attachments/assets/cdc9d4f9-061f-4aeb-9ce1-067e20323c0b)
+
+<img width="1167" height="1210" alt="image" src="https://github.com/user-attachments/assets/803ec9e6-d687-4a8d-b627-a4be7325c679" />
 
 ## Features
 - **Real-Time Song Information:** Automatically identifies the currently playing song and updates the UI with the song title and a link to more information.
