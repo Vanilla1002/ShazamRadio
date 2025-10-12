@@ -50,6 +50,7 @@ async def identify_song(audio_name: str)->InformationOfSong:
     except FileNotFoundError:
         pass
 
+
     stream = ffmpeg.input(audio_url, t=10)
     stream.output(audio_file_place, format="wav").run()
 
@@ -59,7 +60,10 @@ async def identify_song(audio_name: str)->InformationOfSong:
     if out['matches']:
         song = out.get('track', {})
         share = song.get('share', {})
-        os.remove(audio_file_place)
+        try:
+            os.remove(audio_file_place)
+        except FileNotFoundError:
+            pass
         return InformationOfSong(
                 song.get('title', 'Unknown Title'),
                 song.get('subtitle', 'Unknown Subtitle'),
@@ -67,7 +71,10 @@ async def identify_song(audio_name: str)->InformationOfSong:
                 share.get('href', 'Unknown Href')
             )
     
-    os.remove(audio_file_place)
+    try:
+        os.remove(audio_file_place)
+    except FileNotFoundError:
+        pass
     return None
 
 
