@@ -21,6 +21,8 @@ app = FastAPI()
 # Mount - upload the files to the base web
 assets_path = os.path.join(script_dir, '..', 'assets')
 dist_path = os.path.join(script_dir, '..', 'dist')
+if not os.path.exists(dist_path):
+    os.system("npm run build")
 app.mount("/assets", StaticFiles(directory=assets_path), name="assets")
 app.mount('/static', StaticFiles(directory=dist_path), name='static')
 
