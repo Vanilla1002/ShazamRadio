@@ -8,8 +8,8 @@
     "watch": "webpack --config webpack.config.js --watch",
     "install": "pip install -r requirements.txt",
     "i-install" : "python3.12 -m venv venv && . venv/bin/activate && pip install -r requirements.txt",
-    "start:api": "cd backend && uvicorn server:app --reload",
-    "i-start:api": "cd backend && source ../venv/bin/activate && python -m uvicorn server:app --reload"
+    "start:api": "cd backend && python server.py",
+    "i-start:api": "cd backend && source ../venv/bin/activate && python server.py"
   },
   "author": "",
   "license": "ISC",

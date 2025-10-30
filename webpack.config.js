@@ -14,7 +14,7 @@ const config = {
     },
     devServer: {
         open: true,
-        host: 'localhost',
+        host: '0.0.0.0',
         hot: true,
     },
     devtool: isProduction ? 'source-map' : 'inline-source-map',
