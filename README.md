@@ -89,7 +89,7 @@ If you want to customize the stations, [skip to the Customizing Stations section
 
 ### 5. Access the App
 
-After starting the backend, open [localhost:8000](http://localhost:8000/) in your web browser and enjoy your personalized radio experience.
+After starting the backend, open [localhost:8000](http://localhost:8080/) in your web browser and enjoy your personalized radio experience.
 
 ## Customizing Stations
 If you wish to add your customizing Stations to the web, you need to follow these steps
