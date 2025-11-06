@@ -84,36 +84,28 @@ body.dark .news-time {
   --light-mode-border: 1.5px solid #e5e7eb;
 
   --dark-mode-primary: #1c1c1e;
-  #pause-button,
-  #live-button {
-    margin-top: 18px;
-    cursor: pointer;
-    font-size: 28px;
-    color: #222;
-    background: var(--light-mode-card);
-    /* Make chevron arrows thicker and bold */
-    #back-arrow.chevron,
-    #right-arrow.chevron {
-      font-weight: bold;
-      font-size: 18px;
-      letter-spacing: 0px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    transition: background 0.2s, color 0.2s;
-  }
-  #pause-button.dark,
-  #live-button.dark {
-    color: #f2f2f7;
-    background: var(--dark-mode-card);
-  }
   --dark-mode-Secondary: #0a84ff;
   --dark-mode-Accent: #f2f2f7;
   --dark-mode-card: rgba(44, 44, 46, 0.85);
   --dark-mode-blur: 16px;
   --dark-mode-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.32);
   --dark-mode-border: 1.5px solid #23232a;
+}
+
+/* Pause/Live buttons (top-level rules, not nested) */
+#pause-button,
+#live-button {
+  margin-top: 18px;
+  cursor: pointer;
+  font-size: 28px;
+  color: #222;
+  background: var(--light-mode-card);
+  transition: background 0.2s, color 0.2s;
+}
+#pause-button.dark,
+#live-button.dark {
+  color: #f2f2f7;
+  background: var(--dark-mode-card);
 }
 
 body {
@@ -137,6 +129,12 @@ body {
   }
   transition: background 0.7s cubic-bezier(0.4, 0, 0.2, 1),
     color 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Body dark mode via class to avoid JS inline style race conditions */
+body.dark {
+  background: var(--dark-mode-primary);
+  color: var(--dark-mode-Accent);
 }
 
 /* Main grid for stations */
@@ -562,3 +560,179 @@ body {
   box-shadow: 0 2px 8px 0 rgba(60, 60, 60, 0.08);
   transition: background 0.2s, color 0.2s;
 }
+
+/* ===== Dark mode overrides for enlarged view ===== */
+body.dark #enlarged-view {
+  background: var(--dark-mode-card);
+  box-shadow: var(--dark-mode-shadow);
+}
+body.dark #back-arrow,
+body.dark #right-arrow {
+  background: var(--dark-mode-card);
+  color: var(--dark-mode-Accent);
+  box-shadow: var(--dark-mode-shadow);
+}
+body.dark #enlarged-img {
+  background: var(--dark-mode-card);
+  border: var(--dark-mode-border);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.32);
+}
+body.dark #station-name-big { color: var(--dark-mode-Accent); }
+body.dark #song-name { color: var(--dark-mode-Accent); }
+body.dark #pause-button,
+body.dark #live-button {
+  background: var(--dark-mode-card);
+  color: var(--dark-mode-Accent);
+  box-shadow: var(--dark-mode-shadow);
+}
+body.dark #volume-bar {
+  background: var(--dark-mode-card);
+  box-shadow: var(--dark-mode-shadow);
+}
+body.dark #volume-off,
+body.dark #volume-max {
+  color: var(--dark-mode-Accent);
+  background: var(--dark-mode-card);
+  box-shadow: var(--dark-mode-shadow);
+}
+body.dark .slider-container #slider-vol {
+  background: linear-gradient(90deg, #0a84ff 0%, #222 100%);
+  accent-color: #0a84ff;
+}
+
+/* ===== Add Station Modal (iOS-style) ===== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.3);
+  backdrop-filter: blur(6px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+}
+.modal-overlay.show { display: flex; }
+
+.modal-card {
+  width: 92vw;
+  max-width: 420px;
+  background: var(--light-mode-card);
+  border: var(--light-mode-border);
+  border-radius: 20px;
+  box-shadow: 0 8px 32px 0 rgba(60,60,60,0.18);
+  padding: 18px 18px 16px;
+}
+body.dark .modal-card {
+  background: var(--dark-mode-card);
+  border: var(--dark-mode-border);
+  box-shadow: var(--dark-mode-shadow);
+}
+
+.modal-title {
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+  margin: 4px 0 12px;
+  color: var(--light-mode-Accent);
+}
+body.dark .modal-title { color: var(--dark-mode-Accent); }
+
+.modal-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.modal-label {
+  font-size: 13px;
+  color: #666;
+}
+body.dark .modal-label { color: #cfcfd6; }
+
+.modal-input {
+  height: 44px;
+  border-radius: 12px;
+  border: var(--light-mode-border);
+  background: var(--light-mode-card);
+  padding: 10px 14px;
+  font-size: 16px;
+  color: var(--light-mode-Accent);
+  outline: none;
+}
+body.dark .modal-input {
+  border: var(--dark-mode-border);
+  background: var(--dark-mode-card);
+  color: var(--dark-mode-Accent);
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+.btn {
+  min-width: 90px;
+  height: 40px;
+  padding: 0 14px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 15px;
+}
+.btn-secondary {
+  background: transparent;
+  color: #666;
+}
+body.dark .btn-secondary { color: #cfcfd6; }
+
+.btn-primary {
+  background: #0a84ff;
+  color: #fff;
+}
+
+.image-picker {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.image-preview {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  background: #eee;
+  overflow: hidden;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: var(--light-mode-border);
+}
+body.dark .image-preview {
+  background: #23232a;
+  border: var(--dark-mode-border);
+}
+.image-preview img { width: 100%; height: 100%; object-fit: cover; }
+
+.link-btn {
+  color: #0a84ff;
+  background: transparent;
+  border: none;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+/* Small helper text inside modal */
+.modal-help {
+  font-size: 13px;
+  color: #666;
+  margin-top: 4px;
+}
+body.dark .modal-help { color: #cfcfd6; }
+.modal-card[dir='rtl'] .modal-label { text-align: right; }
+.modal-card[dir='rtl'] .modal-help { text-align: right; line-height: 1.4; }
+.modal-card[dir='rtl'] .help-steps { margin:6px 0 6px 0; padding-inline-start:20px; }
+.modal-card code { background: rgba(0,0,0,0.06); padding:2px 4px; border-radius:4px; font-size:12px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace; }
+body.dark .modal-card code { background: rgba(255,255,255,0.08); }

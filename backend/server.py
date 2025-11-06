@@ -6,6 +6,7 @@ from fastapi.staticfiles import StaticFiles
 import uvicorn
 from fastapi import FastAPI, Request 
 import sys
+import requests
 
 from songIdentify import identify_song 
 from newsWrapper import  load_news, compare_articles, send_news
@@ -71,6 +72,42 @@ async def news_endpoint():
 
     # Send full cached list
     return JSONResponse(content=[article.__dict__() for article in articles_cache])
+
+
+def _extract_radio_garden_id(payload: dict) -> str | None:
+    try:
+        hits = payload.get("hits", {}).get("hits", [])
+        if hits:
+            url = hits[0].get("_source", {}).get("page", {}).get("url")
+            if url:
+                return url.split('/')[-1]
+    except Exception:
+        pass
+    return None
+
+
+@app.get("/radio_garden/get_id")
+async def radio_garden_get_id(q: str):
+    try:
+        upstream = requests.get(
+            "https://radio.garden/api/search",
+            params={"q": q},
+            timeout=8,
+            headers={"Accept": "application/json"}
+        )
+        if upstream.status_code != 200:
+            return JSONResponse(content={"error": "upstream error", "status": upstream.status_code}, status_code=upstream.status_code)
+        try:
+            data = upstream.json()
+        except ValueError:
+            return JSONResponse(content={"error": "invalid upstream json"}, status_code=502)
+
+        station_id = _extract_radio_garden_id(data)
+        if station_id:
+            return JSONResponse(content={"id": station_id})
+        return JSONResponse(content={"error": "id not found"}, status_code=404)
+    except requests.RequestException as e:
+        return JSONResponse(content={"error": "upstream request failed", "detail": str(e)}, status_code=502)
 
 
 # catch-all route for other paths and return to /

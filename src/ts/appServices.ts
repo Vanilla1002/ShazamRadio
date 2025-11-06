@@ -1,4 +1,5 @@
 import { radioMap } from "./radioMap";
+import { initAddStationModal } from "./addStation";
 
 import {
   body,
@@ -43,6 +44,82 @@ let alpha: number = 1;
 let everstopped: boolean = false;
 let lastsong: {};
 let currentVolume = parseInt(volumeSlider.value) / 100;
+
+// ==== User stations (localStorage) support (moved core logic to addStation.ts) ====
+type UserStation = { displayName: string; link: string; imageData?: string };
+const USER_STATIONS_KEY = "sr_userStations_v1";
+function loadUserStations(): Record<string, UserStation> {
+  try {
+    const raw = localStorage.getItem(USER_STATIONS_KEY);
+    return raw ? (JSON.parse(raw) as Record<string, UserStation>) : {};
+  } catch { return {}; }
+}
+function slugifyId(s: string): string {
+  return (s || "user-station")
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/[^a-z0-9-_]/g, "")
+    .replace(/-+/g, "-");
+}
+function collectBaseIds(): Set<string> {
+  const ids = new Set<string>();
+  for (const id in radioMap) ids.add(id);
+  return ids;
+}
+function ensureUniqueId(baseIds: Set<string>, userMap: Record<string, UserStation>, id: string): string {
+  if (!baseIds.has(id) && !(id in userMap)) return id;
+  let i = 2;
+  while (baseIds.has(`${id}-${i}`) || `${id}-${i}` in userMap) i++;
+  return `${id}-${i}`;
+}
+function removeExistingUserFigures() {
+  main?.querySelectorAll("figure[data-user='1']").forEach((el) => el.remove());
+  descriptions = descriptions.filter((fig) => fig.getAttribute("data-user") !== "1");
+}
+function renderUserStations() {
+  removeExistingUserFigures();
+  const baseIds = collectBaseIds();
+  const userMap = loadUserStations();
+
+  Object.entries(userMap).forEach(([idRaw, st]) => {
+    let id = slugifyId(idRaw || st.displayName || "user-station");
+    id = ensureUniqueId(baseIds, userMap, id);
+  const img = document.createElement("img");
+  img.src = st.imageData || defaultImgSource;
+    img.classList.add("pictures");
+    img.onerror = () => {
+      img.src = defaultImgSource;
+    };
+
+    img.addEventListener("click", () =>
+      whenChosingStation(id, defaultImgSource, st.displayName, st.link)
+    );
+
+    const elementDescription = document.createElement("figcaption");
+    elementDescription.classList.add("description");
+    elementDescription.appendChild(document.createTextNode(st.displayName || id));
+
+    const figure = document.createElement("figure");
+    figure.setAttribute("id", id);
+    figure.setAttribute("data-user", "1");
+    figure.appendChild(img);
+    figure.appendChild(elementDescription);
+
+    descriptions.push(figure);
+    main?.appendChild(figure);
+  });
+}
+// Plus icon
+const plusIconSvg = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"><rect width="120" height="120" rx="16" ry="16" fill="none"/><path d="M60 35 v50 M35 60 h50" stroke="%23888" stroke-width="8" stroke-linecap="round"/></svg>';
+
+// Initialize external modal and get open function
+const openAddStationModal = initAddStationModal(() => {
+  renderUserStations();
+  renderAddTile();
+}, collectBaseIds);
+
+// ==== End user stations support ====
 
 //networking
 async function sendSongRequest(radioName: string) {
@@ -217,25 +294,66 @@ for (const radioName in radioMap) {
   main?.appendChild(figure);
 }
 
+// Render an in-grid "+" tile (slightly smaller than stations)
+function renderAddTile() {
+  // Remove existing add tile if present
+  const existing = document.getElementById("add-station-tile");
+  existing?.remove();
+  // Also remove from descriptions if previously added
+  descriptions = descriptions.filter((el) => el.id !== "add-station-tile");
+
+  const img = document.createElement("img");
+  img.src = plusIconSvg;
+  img.classList.add("pictures");
+  img.alt = "+";
+  // Keep same tile size as others; plus glyph itself is smaller inside the SVG
+
+  img.addEventListener("click", () => openAddStationModal());
+
+  const cap = document.createElement("figcaption");
+  cap.classList.add("description");
+  cap.appendChild(document.createTextNode("הוסף תחנה"));
+
+  const fig = document.createElement("figure");
+  fig.setAttribute("id", "add-station-tile");
+  fig.setAttribute("data-add", "1");
+  fig.appendChild(img);
+  fig.appendChild(cap);
+
+  // Place at the end as the last station
+  descriptions.push(fig);
+  main?.appendChild(fig);
+}
+
+// Render user stations first, then add tile as the last station
+renderUserStations();
+renderAddTile();
+// Optionally keep the header button; comment out if not needed
+// mountAddStationButton();
+
 function whenChosingStation(
   stationId: string,
-  imgSource: string = `../assets/_images/StationsPng/${stationId}.png`
+  imgSource: string = `../assets/_images/StationsPng/${stationId}.png`,
+  displayName?: string,
+  directLink?: string
 ) {
   loadImg(imgSource);
 
-  stationNameBig.textContent = radioMap[stationId].hebrewName;
+  stationNameBig.textContent =
+    displayName || radioMap[stationId]?.hebrewName || stationId;
   if (currentStationName != stationId) {
-    startingTheStation(stationId);
+    startingTheStation(stationId, directLink);
   }
   currentStationName = stationId;
   openingBigStationTab();
 }
 
-async function startingTheStation(stationId: string) {
+async function startingTheStation(stationId: string, directLink?: string) {
   songDescription.innerHTML = ``;
 
   currentStationAudio.pause();
-  currentStationAudio = new Audio(radioMap[stationId].link);
+  const streamLink = directLink || radioMap[stationId]?.link || "";
+  currentStationAudio = new Audio(streamLink);
   currentStationAudio.volume = currentVolume;
   currentStationAudio.play();
   pauseButton.classList.remove("fa-play");
@@ -244,7 +362,10 @@ async function startingTheStation(stationId: string) {
   isPaused = false;
   everstopped = false;
   isRadio = true;
-  sendSongRequest(stationId);
+  // Only identify songs for built-in stations known to backend
+  if (radioMap[stationId]) {
+    sendSongRequest(stationId);
+  }
   fetchNews();
 }
 
@@ -255,16 +376,13 @@ function backToMainScreen() {
   enlargedView.classList.remove("active");
   //showing all again
   main.style.display = "";
-  for (const radioName in radioMap) {
-    const currentFigure = document.getElementById(radioName);
-    currentFigure?.classList.remove("hidden");
-  }
+  // Show all figures (built-in + user)
+  main?.querySelectorAll("figure").forEach((fig) => fig.classList.remove("hidden"));
   //wait for animation
   setTimeout(() => {
     enlargedView.classList.add("hidden");
     rightArrow.classList.remove("hidden");
     body.classList.remove("no-scroll");
-    // Show night mode button again after slide up
     setTimeout(() => {
       nightMode.classList.remove("hide");
     }, 350);
@@ -303,14 +421,14 @@ rightArrow.addEventListener("click", openingBigStationTab);
 
 searchInput?.addEventListener("input", (e) => {
   const input = (e.target as HTMLInputElement).value.toLowerCase();
-  for (const radioName in radioMap) {
-    const radioNameLower = radioName.toLowerCase();
-    const hebrewNameLower = radioMap[radioName].hebrewName.toLowerCase();
-    const isVisible =
-      hebrewNameLower.includes(input) || radioNameLower.includes(input);
-    const currentFigure = document.getElementById(radioName);
-    currentFigure?.classList.toggle("hidden", !isVisible);
-  }
+  const figures = Array.from(main?.querySelectorAll<HTMLElement>("figure") ?? []);
+  figures.forEach((fig) => {
+    const id = fig.id.toLowerCase();
+    const cap = fig.querySelector("figcaption");
+    const name = (cap?.textContent || "").toLowerCase();
+    const isVisible = id.includes(input) || name.includes(input);
+    fig.classList.toggle("hidden", !isVisible);
+  });
 });
 
 //preventing enter
@@ -335,9 +453,7 @@ nightMode?.addEventListener("click", () => {
   nightMode.classList.toggle("fa-sun", isDark);
   nightMode.style.color = isDark ? darkModeSecondary : "#222";
 
-  // background
-  body.style.backgroundColor = isDark ? darkModePrimary : lightModePrimary;
-  body.style.color = isDark ? darkModeSecondary : lightModeSecondary;
+  // background handled by CSS via body.dark class
 
   // name and pictures border
   descriptions.forEach((figure) => {
@@ -369,14 +485,13 @@ nightMode?.addEventListener("click", () => {
     ? "rgba(231, 196, 249, 0.25)"
     : "rgba(0, 0, 0, 0.25)";
 
-  // enlarge view
-  enlargedView.style.backgroundColor = isDark
-    ? darkModePrimary
-    : lightModePrimary;
+  // enlarge view (use CSS classes instead of inline background)
+  enlargedImg.classList.toggle("dark", isDark);
+  stationNameBig.classList.toggle("dark", isDark);
+  liveButton.classList.toggle("dark", isDark);
+  pauseButton.classList.toggle("dark", isDark);
   enlargedImg.style.boxShadow = boxShadow();
-  stationNameBig.style.color = isDark ? darkModeAccent : lightModeAccent;
-  liveButton.style.color = isDark ? darkModeSecondary : "#222";
-  pauseButton.style.color = isDark ? darkModeAccent : lightModeAccent;
+  backArrow.style.color = isDark ? darkModeSecondary : lightModeAccent;
 
   backArrow.style.color = isDark ? darkModeSecondary : lightModeAccent;
   const rightChevron = rightArrow.querySelector(".chevron");

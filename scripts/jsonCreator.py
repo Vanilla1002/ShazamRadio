@@ -41,7 +41,7 @@ def get_id(radio_identifier):
 def get_station():
     radio_identifier = input('Enter the radio identifier: ').strip().lower()
     while True:
-        radio_display_name = input('Enter the radio display name: ').strip()
+        radio_display_name = input('Enter the radio display name: ')
         if radio_display_name:
             break
         print('Display name cannot be empty. Please try again.')
