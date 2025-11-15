@@ -46,7 +46,7 @@ let lastsong: {};
 let currentVolume = parseInt(volumeSlider.value) / 100;
 
 // ==== User stations (localStorage) support (moved core logic to addStation.ts) ====
-type UserStation = { displayName: string; link: string; imageData?: string };
+type UserStation = { displayName: string; link: string };
 const USER_STATIONS_KEY = "sr_userStations_v1";
 function loadUserStations(): Record<string, UserStation> {
   try {
@@ -74,7 +74,13 @@ function ensureUniqueId(baseIds: Set<string>, userMap: Record<string, UserStatio
   return `${id}-${i}`;
 }
 function removeExistingUserFigures() {
-  main?.querySelectorAll("figure[data-user='1']").forEach((el) => el.remove());
+  main?.querySelectorAll("figure[data-user='1']").forEach((el) => {
+    const img = el.querySelector('img');
+    if (img && (img as HTMLImageElement).dataset.objectUrl) {
+      URL.revokeObjectURL((img as HTMLImageElement).dataset.objectUrl!);
+    }
+    el.remove();
+  });
   descriptions = descriptions.filter((fig) => fig.getAttribute("data-user") !== "1");
 }
 function renderUserStations() {
@@ -83,14 +89,20 @@ function renderUserStations() {
   const userMap = loadUserStations();
 
   Object.entries(userMap).forEach(([idRaw, st]) => {
-    let id = slugifyId(idRaw || st.displayName || "user-station");
-    id = ensureUniqueId(baseIds, userMap, id);
-  const img = document.createElement("img");
-  img.src = st.imageData || defaultImgSource;
+    // Use the key as-is; it's already unique at save time
+    const id = idRaw || slugifyId(st.displayName || "user-station");
+    const img = document.createElement("img");
+    // Always try IndexedDB blob; show placeholder until it loads
+    img.src = defaultImgSource;
+    import('./imageStore').then(mod => mod.getStationImage(id)).then(blob => {
+      if (blob) {
+        const url = URL.createObjectURL(blob);
+        img.src = url;
+        (img as HTMLImageElement).dataset.objectUrl = url;
+      }
+    }).catch(() => { /* ignore */ });
     img.classList.add("pictures");
-    img.onerror = () => {
-      img.src = defaultImgSource;
-    };
+    img.onerror = () => { img.src = defaultImgSource; };
 
     img.addEventListener("click", () =>
       whenChosingStation(id, defaultImgSource, st.displayName, st.link)

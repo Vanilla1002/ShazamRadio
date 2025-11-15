@@ -4,7 +4,6 @@
 interface StoredUserStation {
   displayName: string;
   link: string;
-  imageData?: string;
 }
 
 const USER_STATIONS_KEY = 'sr_userStations_v1';
@@ -53,7 +52,64 @@ export function initAddStationModal(onAdded: () => void, getBaseIds: () => Set<s
   let saveBtn: HTMLButtonElement | null = null;
   let cancelBtn: HTMLButtonElement | null = null;
   let msgArea: HTMLElement | null = null;
-  let tempImageData: string | null = null;
+  let tempImageBlob: Blob | null = null;
+  let tempPreviewURL: string | null = null;
+  const MAX_STORED_IMAGE_BYTES = 350 * 1024; // ~350KB cap for stored preview
+  const MAX_INPUT_FILE_BYTES = 5 * 1024 * 1024; // 5MB input soft limit
+
+  // Lazy load blob store helpers (avoid circular deps if any)
+  async function saveBlobForId(id: string, blob: Blob) {
+    const mod = await import('./imageStore');
+    return mod.saveStationImage(id, blob);
+  }
+
+  // Resize image file to a Blob (JPEG)
+  function resizeImageFileToBlob(file: File, maxWidth = 800, quality = 0.8): Promise<Blob> {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      const reader = new FileReader();
+      reader.onload = () => { img.src = reader.result as string; };
+      reader.onerror = reject;
+      img.onerror = reject;
+      img.onload = () => {
+        const ratio = Math.min(1, maxWidth / img.width);
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.round(img.width * ratio);
+        canvas.height = Math.round(img.height * ratio);
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          reject(new Error('Canvas 2D context not available'));
+          return;
+        }
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        canvas.toBlob((blob) => {
+          if (!blob) {
+            reject(new Error('Failed to create blob'));
+            return;
+          }
+            resolve(blob);
+        }, 'image/jpeg', quality);
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // Try multiple resize attempts to get under size cap
+  async function resizeUnderCap(file: File): Promise<Blob> {
+    const attempts = [
+      { w: 800, q: 0.8 },
+      { w: 800, q: 0.6 },
+      { w: 600, q: 0.6 },
+      { w: 600, q: 0.5 },
+    ];
+    let last: Blob | null = null;
+    for (const a of attempts) {
+      const blob = await resizeImageFileToBlob(file, a.w, a.q);
+      last = blob;
+      if (blob.size <= MAX_STORED_IMAGE_BYTES) return blob;
+    }
+    return last!;
+  }
 
   function buildModal() {
     if (overlay) return;
@@ -132,21 +188,31 @@ export function initAddStationModal(onAdded: () => void, getBaseIds: () => Set<s
     });
   }
 
-  function handleImagePick(ev: Event) {
+  async function handleImagePick(ev: Event) {
     const input = ev.target as HTMLInputElement;
     const file = input.files && input.files[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      tempImageData = reader.result as string;
+    try {
+      if (!file.type.startsWith('image/')) {
+        if (msgArea) { msgArea.style.color = '#c00'; msgArea.textContent = 'הקובץ אינו תמונה.'; }
+        return;
+      }
+      
+      const blob = await resizeUnderCap(file);
+      tempImageBlob = blob;
+      if (tempPreviewURL) URL.revokeObjectURL(tempPreviewURL);
+      tempPreviewURL = URL.createObjectURL(blob);
       if (imagePreview) {
         imagePreview.innerHTML = '';
-        const img = document.createElement('img');
-        img.src = tempImageData;
-        imagePreview.appendChild(img);
+        const imgEl = document.createElement('img');
+        imgEl.src = tempPreviewURL;
+        imagePreview.appendChild(imgEl);
       }
-    };
-    reader.readAsDataURL(file);
+      if (msgArea) { msgArea.style.color = '#666'; msgArea.textContent = ''; }
+    } catch (e) {
+      console.error('Failed to process image', e);
+      if (msgArea) { msgArea.style.color = '#c00'; msgArea.textContent = 'טעינת התמונה נכשלה.'; }
+    }
   }
 
   async function handleSave() {
@@ -179,8 +245,13 @@ export function initAddStationModal(onAdded: () => void, getBaseIds: () => Set<s
     const baseIds = getBaseIds();
     let id = slugifyId(identifierRaw);
     id = ensureUniqueId(baseIds, existing, id);
-    existing[id] = { displayName, link: streamLink, imageData: tempImageData || undefined };
+    existing[id] = { displayName, link: streamLink }; // no base64 image in new model
     saveUserStations(existing);
+
+    // Persist blob if available
+    if (tempImageBlob) {
+      try { await saveBlobForId(id, tempImageBlob); } catch (e) { console.warn('Failed saving blob', e); }
+    }
 
     msgArea.style.color = '#0a84ff';
     msgArea.textContent = 'נשמר!';
@@ -193,7 +264,9 @@ export function initAddStationModal(onAdded: () => void, getBaseIds: () => Set<s
 
   function open() {
     buildModal();
-    tempImageData = null;
+  if (tempPreviewURL) { URL.revokeObjectURL(tempPreviewURL); }
+  tempPreviewURL = null;
+  tempImageBlob = null;
     if (imagePreview) imagePreview.innerHTML = '<span style="font-size:12px;opacity:0.6;">אין</span>';
     if (identifierInput) identifierInput.value = '';
     if (displayNameInput) displayNameInput.value = '';
