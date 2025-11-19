@@ -94,19 +94,24 @@ function renderUserStations() {
     const img = document.createElement("img");
     // Always try IndexedDB blob; show placeholder until it loads
     img.src = defaultImgSource;
-    import('./imageStore').then(mod => mod.getStationImage(id)).then(blob => {
-      if (blob) {
-        const url = URL.createObjectURL(blob);
-        img.src = url;
-        (img as HTMLImageElement).dataset.objectUrl = url;
-      }
-    }).catch(() => { /* ignore */ });
+      import('./imageStore').then(mod => mod.getStationImage(id)).then(blob => {
+        if (blob) {
+          const url = URL.createObjectURL(blob);
+          img.src = url;
+          (img as HTMLImageElement).dataset.objectUrl = url;
+          // If station currently enlarged, update enlarged image immediately
+          if (currentStationName === id) {
+            loadImg(url);
+          }
+        }
+      }).catch(() => { /* ignore */ });
     img.classList.add("pictures");
     img.onerror = () => { img.src = defaultImgSource; };
 
-    img.addEventListener("click", () =>
-      whenChosingStation(id, defaultImgSource, st.displayName, st.link)
-    );
+      // Use current img.src (may be placeholder first, updated to blob later)
+      img.addEventListener("click", () =>
+        whenChosingStation(id, img.src, st.displayName, st.link)
+      );
 
     const elementDescription = document.createElement("figcaption");
     elementDescription.classList.add("description");
